@@ -1,0 +1,14 @@
+# Normalisasi line-ending: LF di repo, checkout sesuai OS
+* text=auto eol=lf
+
+# File biner
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.zip binary
