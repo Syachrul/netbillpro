@@ -1,0 +1,203 @@
+// NetBill Pro - Prisma schema (tahap C1-2)
+// Hanya tabel inti LEDGER. Tabel non-ledger masuk S1/S2.
+// Sumber aturan: SPEC-LEDGER-001 (kanonik), PRD v1.1 bagian 6, TDD v1.1 bagian 7.
+
+generator client {
+  provider = "prisma-client-js"
+  // binaryTargets untuk production Linux nanti: ["native", "debian-openssl-3.0.x"]
+  // Untuk development Windows, cukup "native" (default).
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== ENUM =====
+
+enum CustomerStatus {
+  AKTIF
+  ISOLIR
+  BERHENTI
+
+  @@map("customer_status")
+}
+
+enum InvoiceType {
+  BULANAN
+  MANUAL
+  SALDO_AWAL
+
+  @@map("invoice_type")
+}
+
+enum InvoiceStatus {
+  BELUM_LUNAS
+  DIBAYAR_SEBAGIAN
+  LUNAS
+  BATAL
+
+  @@map("invoice_status")
+}
+
+enum LedgerType {
+  SALDO_AWAL
+  TAGIHAN
+  PEMBAYARAN
+  PENYESUAIAN_DEBIT
+  PENYESUAIAN_KREDIT
+  REVERSAL
+  REFUND_DEPOSIT
+
+  @@map("ledger_type")
+}
+
+enum PayMethod {
+  TUNAI
+  TRANSFER_BANK
+  E_WALLET
+
+  @@map("pay_method")
+}
+
+// ===== CUSTOMERS =====
+
+model Customer {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String         @unique
+  name        String
+  phone       String         @unique
+  email       String?
+  address     String
+  status      CustomerStatus @default(AKTIF)
+  activatedAt DateTime?      @map("activated_at") @db.Date
+  dueDay      Int?           @map("due_day") @db.SmallInt
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  invoices      Invoice[]
+  payments      Payment[]
+  ledgerEntries LedgerEntry[]
+
+  @@index([status], map: "ix_customers_status")
+  @@map("customers")
+}
+
+// ===== INVOICES =====
+
+model Invoice {
+  id         String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number     String        @unique
+  customerId String        @map("customer_id") @db.Uuid
+  type       InvoiceType   @default(BULANAN)
+  period     String?       @db.Char(7)
+  issuedAt   DateTime      @default(now()) @map("issued_at") @db.Timestamptz(6)
+  dueDate    DateTime      @map("due_date") @db.Date
+  total      BigInt
+  allocated  BigInt        @default(0)
+  status     InvoiceStatus @default(BELUM_LUNAS)
+  snapshot   Json
+  voidedAt   DateTime?     @map("voided_at") @db.Timestamptz(6)
+  voidReason String?       @map("void_reason")
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  customer    Customer            @relation(fields: [customerId], references: [id])
+  items       InvoiceItem[]
+  allocations PaymentAllocation[]
+
+  @@index([customerId, dueDate], map: "ix_invoices_customer_due")
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceId   String @map("invoice_id") @db.Uuid
+  kind        String
+  description String
+  amount      BigInt
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId], map: "ix_invoice_items_invoice")
+  @@map("invoice_items")
+}
+
+// ===== PAYMENTS =====
+
+model Payment {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId     String    @map("customer_id") @db.Uuid
+  amount         BigInt
+  method         PayMethod
+  paidAt         DateTime  @map("paid_at") @db.Date
+  note           String?
+  proofKey       String?   @map("proof_key")
+  recordedBy     String    @map("recorded_by") @db.Uuid
+  idempotencyKey String    @unique @map("idempotency_key")
+  voidedAt       DateTime? @map("voided_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([customerId, paidAt], map: "ix_payments_customer_paid")
+  @@map("payments")
+}
+
+// ===== LEDGER (APPEND-ONLY) =====
+// Trigger append-only TIDAK di schema ini; dibuat di migrasi SQL (C1-3).
+
+model LedgerEntry {
+  seq          BigInt     @id @default(autoincrement())
+  id           String     @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId   String     @map("customer_id") @db.Uuid
+  type         LedgerType
+  debit        BigInt     @default(0)
+  kredit       BigInt     @default(0)
+  balanceAfter BigInt     @map("balance_after")
+  refType      String?    @map("ref_type")
+  refId        String?    @map("ref_id") @db.Uuid
+  description  String?
+  createdBy    String?    @map("created_by") @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  customer    Customer            @relation(fields: [customerId], references: [id])
+  allocations PaymentAllocation[] @relation("SourceLedger")
+  refunds     PaymentAllocation[] @relation("RefundLedger")
+  reversalOf  LedgerReversal?     @relation("Reversal")
+  reversedBy  LedgerReversal?     @relation("Original")
+
+  @@index([customerId, seq(sort: Desc)], map: "ix_ledger_customer_seq")
+  @@map("ledger_entries")
+}
+
+model LedgerReversal {
+  originalLedgerId String @id @map("original_ledger_id") @db.Uuid
+  reversalLedgerId String @unique @map("reversal_ledger_id") @db.Uuid
+  reason           String
+
+  original LedgerEntry @relation("Reversal", fields: [originalLedgerId], references: [id])
+  reversal LedgerEntry @relation("Original", fields: [reversalLedgerId], references: [id])
+
+  @@map("ledger_reversals")
+}
+
+// ===== ALOKASI PEMBAYARAN =====
+// E-3: invoice_id boleh NULL jika alokasi menuju refund (refund_ledger_id terisi).
+// CHECK constraint: (invoice_id IS NULL) <> (refund_ledger_id IS NULL) - di SQL migrasi.
+
+model PaymentAllocation {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceLedgerId String   @map("source_ledger_id") @db.Uuid
+  invoiceId      String?  @map("invoice_id") @db.Uuid
+  refundLedgerId String?  @map("refund_ledger_id") @db.Uuid
+  amount         BigInt
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  source       LedgerEntry  @relation("SourceLedger", fields: [sourceLedgerId], references: [id])
+  invoice      Invoice?     @relation(fields: [invoiceId], references: [id])
+  refundLedger LedgerEntry? @relation("RefundLedger", fields: [refundLedgerId], references: [id])
+
+  @@index([invoiceId], map: "ix_alloc_invoice")
+  @@index([sourceLedgerId], map: "ix_alloc_source")
+  @@map("payment_allocations")
+}
