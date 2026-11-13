@@ -1,0 +1,42 @@
+openapi: 3.1.0
+info:
+  title: NetBill Pro API
+  version: 0.0.0
+  description: |
+    Kontrak API NetBill Pro. Draf awal - endpoint akan bertambah per sprint.
+    Sumber aturan: PRD v1.1, TDD v1.1, SPEC-LEDGER-001.
+  contact:
+    name: NetBill Pro Engineering
+servers:
+  - url: http://localhost:3000
+    description: Development (apps/api)
+tags:
+  - name: system
+    description: Health, readiness, version
+paths:
+  /api/v1/health:
+    get:
+      tags: [system]
+      operationId: getHealth
+      summary: Liveness check
+      responses:
+        '200':
+          description: Service sehat
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, timestamp]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                  timestamp:
+                    type: string
+                    format: date-time
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

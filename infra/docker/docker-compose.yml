@@ -1,0 +1,41 @@
+# NetBill Pro — Development stack (Postgres 16 + Redis 7)
+# Jalankan dari root repo:  docker compose -f infra/docker/docker-compose.yml --env-file infra/docker/.env up -d
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: netbill-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-netbill}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-netbill}
+      POSTGRES_DB: ${POSTGRES_DB:-netbill}
+      TZ: Asia/Jakarta
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-netbill} -d ${POSTGRES_DB:-netbill}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: netbill-redis
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:
+  redis_data:
