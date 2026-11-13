@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@netbill/shared": ["packages/shared/src/index.ts"],
+      "@netbill/shared/*": ["packages/shared/src/*"],
+      "@netbill/ui": ["packages/ui/src/index.ts"],
+      "@netbill/ui/*": ["packages/ui/src/*"],
+      "@netbill/config": ["packages/config/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", "coverage"]
+}
