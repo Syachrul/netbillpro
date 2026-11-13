@@ -48,3 +48,6 @@ infra/docker/data/
 tmp/
 temp/
 .cache/
+
+# Backup files
+*.bak

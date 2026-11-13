@@ -1,0 +1,22 @@
+# CODEOWNERS - otomatis request review dari pemilik saat PR menyentuh path ini.
+# Format: <path>  <@username>  <@username>
+#
+# Ganti placeholder dengan username GitHub yang sebenarnya.
+# Sementara: karena repo baru satu orang, semua diarahkan ke @Syachrul.
+
+# Default: semua berkas butuh review pemilik repo
+*                       @Syachrul
+
+# Dokumen dan kontrak (peringkat 1-4 di hierarki sumber kebenaran)
+/docs/                  @Syachrul
+/contracts/             @Syachrul
+/CLAUDE.md              @Syachrul
+/AGENTS.md              @Syachrul
+
+# Zona merah (ledger, billing, payments, auth, migrasi)
+/modules/ledger/        @Syachrul
+/db/migrations/         @Syachrul
+
+# Infrastruktur dan CI
+/.github/               @Syachrul
+/infra/                 @Syachrul
