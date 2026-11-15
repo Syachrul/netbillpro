@@ -1,11 +1,8 @@
-// NetBill Pro - Prisma schema (tahap C1-2)
-// Hanya tabel inti LEDGER. Tabel non-ledger masuk S1/S2.
-// Sumber aturan: SPEC-LEDGER-001 (kanonik), PRD v1.1 bagian 6, TDD v1.1 bagian 7.
+// NetBill Pro - Prisma Schema (C5.0)
+// Sumber aturan: SPEC-LEDGER-001, SPEC-PKG-SUB-001
 
 generator client {
   provider = "prisma-client-js"
-  // binaryTargets untuk production Linux nanti: ["native", "debian-openssl-3.0.x"]
-  // Untuk development Windows, cukup "native" (default).
 }
 
 datasource db {
@@ -14,7 +11,6 @@ datasource db {
 }
 
 // ===== ENUM =====
-
 enum CustomerStatus {
   AKTIF
   ISOLIR
@@ -61,45 +57,80 @@ enum PayMethod {
 }
 
 // ===== CUSTOMERS =====
-
 model Customer {
-  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code        String         @unique
-  name        String
-  phone       String         @unique
-  email       String?
-  address     String
-  status      CustomerStatus @default(AKTIF)
-  activatedAt DateTime?      @map("activated_at") @db.Date
-  dueDay      Int?           @map("due_day") @db.SmallInt
-  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code            String         @unique
+  name            String
+  phone           String         @unique
+  email           String?
+  usernameHotspot String?        @map("username_hotspot")
+  address         String
+  status          CustomerStatus @default(AKTIF)
+  activatedAt     DateTime?      @map("activated_at") @db.Date
+  dueDay          Int?           @map("due_day") @db.SmallInt
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   invoices      Invoice[]
   payments      Payment[]
   ledgerEntries LedgerEntry[]
+  subscriptions Subscription[]
 
   @@index([status], map: "ix_customers_status")
   @@map("customers")
 }
 
-// ===== INVOICES =====
+// ===== PACKAGES & SUBSCRIPTIONS =====
+model Package {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique
+  name        String
+  speedDown   Int?     @map("speed_down")
+  speedUp     Int?     @map("speed_up")
+  price       BigInt   @default(0)
+  installFee  BigInt   @default(0) @map("install_fee")
+  description String?
+  status      String   @default("AKTIF")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  subscriptions Subscription[]
+
+  @@map("packages")
+}
+
+model Subscription {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId   String    @map("customer_id") @db.Uuid
+  packageId    String    @map("package_id") @db.Uuid
+  priceAtStart BigInt    @map("price_at_start")
+  startDate    DateTime  @map("start_date") @db.Date
+  endDate      DateTime? @map("end_date") @db.Date
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  package  Package  @relation(fields: [packageId], references: [id])
+
+  @@map("subscriptions")
+}
+
+// ===== INVOICES =====
 model Invoice {
-  id         String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  number     String        @unique
-  customerId String        @map("customer_id") @db.Uuid
-  type       InvoiceType   @default(BULANAN)
-  period     String?       @db.Char(7)
-  issuedAt   DateTime      @default(now()) @map("issued_at") @db.Timestamptz(6)
-  dueDate    DateTime      @map("due_date") @db.Date
-  total      BigInt
-  allocated  BigInt        @default(0)
-  status     InvoiceStatus @default(BELUM_LUNAS)
-  snapshot   Json
-  voidedAt   DateTime?     @map("voided_at") @db.Timestamptz(6)
-  voidReason String?       @map("void_reason")
-  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number         String        @unique
+  customerId     String        @map("customer_id") @db.Uuid
+  subscriptionId String?       @map("subscription_id") @db.Uuid
+  type           InvoiceType   @default(BULANAN)
+  period         String?       @db.Char(7)
+  issuedAt       DateTime      @default(now()) @map("issued_at") @db.Timestamptz(6)
+  dueDate        DateTime      @map("due_date") @db.Date
+  total          BigInt
+  allocated      BigInt        @default(0)
+  status         InvoiceStatus @default(BELUM_LUNAS)
+  snapshot       Json
+  voidedAt       DateTime?     @map("voided_at") @db.Timestamptz(6)
+  voidReason     String?       @map("void_reason")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
 
   customer    Customer            @relation(fields: [customerId], references: [id])
   items       InvoiceItem[]
@@ -123,7 +154,6 @@ model InvoiceItem {
 }
 
 // ===== PAYMENTS =====
-
 model Payment {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   customerId     String    @map("customer_id") @db.Uuid
@@ -144,8 +174,6 @@ model Payment {
 }
 
 // ===== LEDGER (APPEND-ONLY) =====
-// Trigger append-only TIDAK di schema ini; dibuat di migrasi SQL (C1-3).
-
 model LedgerEntry {
   seq          BigInt     @id @default(autoincrement())
   id           String     @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -182,9 +210,6 @@ model LedgerReversal {
 }
 
 // ===== ALOKASI PEMBAYARAN =====
-// E-3: invoice_id boleh NULL jika alokasi menuju refund (refund_ledger_id terisi).
-// CHECK constraint: (invoice_id IS NULL) <> (refund_ledger_id IS NULL) - di SQL migrasi.
-
 model PaymentAllocation {
   id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   sourceLedgerId String   @map("source_ledger_id") @db.Uuid

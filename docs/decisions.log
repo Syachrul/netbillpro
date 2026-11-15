@@ -54,3 +54,59 @@ Decision: ADR-04 dan ADR-14 DIRATIFIKASI menjadi Diterima.
 Decision: C3 Design Package v4.4 DITERIMA sebagai baseline implementasi.
 Decision: C3 IMPLEMENTATION AUTHORIZED.
 Impact: LedgerService boleh diimplementasikan dan diuji.
+
+[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW
+
+Q-1 (ID Member): Format = CUST-0001 (pertahankan customers.code sistem).
+    Alasan: Jangan ganti format ID hanya untuk meniru dokumen eksternal.
+Q-2 (username_hotspot): Masuk desain C5.0. Unique dalam scope sistem.
+    Wajib/opsional: perlu keputusan terpisah di spec C5.0.
+Q-3 (Batas Isolir): due_date + 14 hari (configurable via settings).
+    Disimpan di invoice snapshot agar tidak retroaktif.
+OQ-3 (Tagihan Pertama): PRORATA untuk aktivasi tengah periode;
+    PENUH untuk aktivasi awal periode.
+    Detail formula/denominator/rounding: didefinisikan di spec billing.
+
+Status: DECIDED. Implementasi: HOLD (menunggu C5.0 design).
+
+[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW
+
+Q-1 (ID Member): Format = CUST-0001 (pertahankan customers.code sistem).
+    Alasan: Jangan ganti format ID hanya untuk meniru dokumen eksternal.
+Q-2 (username_hotspot): Masuk desain C5.0. Unique dalam scope sistem.
+    Wajib/opsional: perlu keputusan terpisah di spec C5.0.
+Q-3 (Batas Isolir): due_date + 14 hari (configurable via settings).
+    Disimpan di invoice snapshot agar tidak retroaktif.
+OQ-3 (Tagihan Pertama): PRORATA untuk aktivasi tengah periode;
+    PENUH untuk aktivasi awal periode.
+    Detail formula/denominator/rounding: didefinisikan di spec billing.
+
+Status: DECIDED. Implementasi: HOLD (menunggu C5.0 design).
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
+
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1). Per-customer = Fase 2.
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
+
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1). Per-customer = Fase 2.
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1).
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
