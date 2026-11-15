@@ -132,7 +132,7 @@ export async function truncateAll(prisma: PrismaClient): Promise<void> {
   await prisma.$executeRawUnsafe("SET lock_timeout = '30s'");
   try {
     await prisma.$executeRawUnsafe(
-      "TRUNCATE TABLE payment_allocations, ledger_reversals, ledger_entries, invoices, payments, subscriptions, packages, customers RESTART IDENTITY CASCADE"
+      "TRUNCATE TABLE payment_allocations, ledger_reversals, ledger_entries, invoices, payments, subscriptions, packages, customers, users RESTART IDENTITY CASCADE"
     );
   } finally {
     await prisma.$executeRawUnsafe("SET lock_timeout = DEFAULT");
