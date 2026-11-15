@@ -19,6 +19,9 @@ export interface IssueInvoiceInput {
   dueDate: Date;
   number: string;
   period: string;
+  type?: "BULANAN" | "MANUAL" | "SALDO_AWAL";
+  snapshot?: Record<string, unknown>;
+  subscriptionId?: string;
 }
 
 export interface RefundInput {
@@ -111,19 +114,20 @@ export class LedgerService {
         data: {
           number: input.number,
           customerId: input.customerId,
-          type: "MANUAL",
+          subscriptionId: input.subscriptionId ?? null,
+          type: input.type ?? "MANUAL",
           period: input.period,
           dueDate: input.dueDate,
           total: input.total,
           allocated: 0n,
           status: "BELUM_LUNAS",
-          snapshot: {},
+          snapshot: input.snapshot ?? {},
         },
       });
       await tx.ledgerEntry.create({
         data: {
           customerId: input.customerId,
-          type: "TAGIHAN",
+          type: input.type === "SALDO_AWAL" ? "SALDO_AWAL" : "TAGIHAN",
           debit: input.total,
           kredit: 0n,
           balanceAfter: prevBalance - input.total,
