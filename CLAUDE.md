@@ -55,3 +55,23 @@ Kuning (CRUD, laporan, notifikasi, impor, PDF). Hijau (UI presentasi, dokumentas
 
 ## Gaya
 Ikuti golden example di `modules/packages` (akan dibuat). Fungsi kecil, nama jelas, tanpa abstraksi prematur.
+
+## ATURAN KERAS #12: @Inject() eksplisit WAJIB
+
+Setiap file di `apps/api/src/modules/` yang memakai dependency injection WAJIB pakai `@Inject()` eksplisit di constructor:
+
+```typescript
+// BENAR:
+constructor(
+  @Inject(PrismaClient) private readonly prisma: PrismaClient,
+  @Inject(LedgerService) private readonly ledger: LedgerService,
+) {}
+
+// SALAH (error "Cannot read properties of undefined"):
+constructor(
+  private readonly prisma: PrismaClient,
+  private readonly ledger: LedgerService,
+) {}
+Berlaku untuk semua: PrismaClient, JwtService, Reflector, dan setiap service yang di-inject. Kombinasi emitDecoratorMetadata + Fastify adapter gagal resolve tipe otomatis.
+
+Jika menemui error Cannot read properties of undefined (reading 'x') di runtime/HTTP test: gejala klasik DI. Perbaiki dengan @Inject().
