@@ -48,3 +48,9 @@ separate, bounded activity after the applicable C3 checkpoint.
 Provenance: UNKNOWN / NOT VERIFIED.
 Approval: NOT APPROVED.
 Integration: NOT AUTHORIZED.
+
+[2026-11-15] OWNER DECISION - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION
+Decision: ADR-04 dan ADR-14 DIRATIFIKASI menjadi Diterima.
+Decision: C3 Design Package v4.4 DITERIMA sebagai baseline implementasi.
+Decision: C3 IMPLEMENTATION AUTHORIZED.
+Impact: LedgerService boleh diimplementasikan dan diuji.

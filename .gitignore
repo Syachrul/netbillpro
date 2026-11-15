@@ -54,3 +54,7 @@ temp/
 
 # Pengecualian: decisions.log adalah artefak governance (wajib dilacak)
 !docs/decisions.log
+
+# Temporary extraction folders
+_unzipped/
+*.zip

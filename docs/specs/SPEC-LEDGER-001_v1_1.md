@@ -5,7 +5,7 @@ Zona risiko: 🔴 **Merah**    Prioritas: **P0**    Modul: `ledger` (+ pemanggil
 | Atribut | Detail |
 | :--- | :--- |
 | **ID Dokumen** | SPEC-LEDGER-001 |
-| **Versi** | 1.0 (Draft for Review) |
+| **Versi** | 1.1 (Draft for Review): menambah BR-V6, E-7, vektor T21-T22 hasil uji properti pada model referensi |
 | **Tanggal** | 13 November 2026 |
 | **Mencakup** | FR-PAY-02, FR-PAY-03, FR-PAY-04, FR-PAY-06, FR-BIL-02, FR-BIL-05, FR-BIL-06, FR-BIL-08, FR-BIL-09, FR-CUS-06 (saldo awal), FR-CUS-08 (refund, P1) |
 | **Sumber** | PRD v1.1 §6 dan §5.3-5.4, TDD v1.1 §7-8, Playbook §4-6 |
@@ -27,6 +27,7 @@ Saat merinci aturan, ditemukan beberapa hal pada PRD v1.1 / TDD v1.1 yang harus 
 | E-4 | TDD §7.2 `ledger_type` | `PENYESUAIAN_DEBIT` berdiri sendiri akan memerlukan aturan alokasi tambahan | Fase 1: **tidak dipakai**. Debit tambahan (denda, biaya) dibuat sebagai **invoice tipe `MANUAL`** |
 | E-5 | PRD §5.3 / DDL `invoices.total >= 0` | Invoice bernilai 0 tidak dapat membuat entri ledger (CHECK debit/kredit) | Total invoice **harus > 0** (D-3) |
 | E-6 | TDD §7.4 invarian | I-3 belum memperhitungkan refund & entri reversal. Belum ada invarian "deposit tidak boleh menganggur" | Invarian diperbarui di Bagian 6 (I-1..I-8) |
+| E-7 | Spec v1.0 §3.6 (void) | **Ditemukan oleh uji properti:** void pembayaran yang dananya sebagian sudah di-refund membuat saldo tak sesuai (I-3 dilanggar), karena uang sudah keluar | Aturan baru **BR-V6**: void ditolak `409 PAYMENT_PARTIALLY_REFUNDED` |
 
 ---
 
@@ -101,6 +102,7 @@ Dengan `alokasi` = Σ alokasi (bertanda) ke invoice itu:
 - **BR-V3.** Void wajib: alasan (min 5 karakter), persetujuan Owner (jika diajukan Admin), audit log (sebelum/sesudah).
 - **BR-V4.** Void pembayaran yang sudah masuk **setoran kolektor terkonfirmasi** ditolak `409 SETTLEMENT_CONFIRMED`, kecuali Owner membuka kembali setoran (D-2).
 - **BR-V5.** Void bersifat **idempoten dan aman paralel**: dua void bersamaan pada objek sama → satu berhasil, satu `409 ALREADY_VOIDED`.
+- **BR-V6.** Void pembayaran **ditolak** `409 PAYMENT_PARTIALLY_REFUNDED` bila ada alokasi netto > 0 dari kredit pembayaran itu menuju refund. Koreksi dilakukan Owner secara manual (mis. refund dikoreksi lewat prosedur terpisah di luar Fase 1).
 
 ### 3.7 Saldo Awal (Impor)
 - **BR-S1.** Tunggakan awal → **invoice tipe `SALDO_AWAL`** dengan satu item `SALDO_AWAL` (agar aging & alokasi konsisten), `due_date` dari data impor atau tanggal cut-off. Ledger: debit tipe `SALDO_AWAL`.
@@ -168,6 +170,7 @@ async function voidPayment(tx, paymentId, reason, actor) {
   await lockCustomer(tx, pay.customerId);
   if (pay.voidedAt) throw409('ALREADY_VOIDED');                      // BR-V5
   assertNotInConfirmedSettlement(tx, pay);                           // BR-V4
+  await assertNotRefunded(tx, pay.ledgerEntryId);                    // BR-V6 -> 409 PAYMENT_PARTIALLY_REFUNDED
   const rev = await appendLedger(tx, { customerId: pay.customerId, type: 'REVERSAL',
                                        debit: pay.amount, kredit: 0, refType: 'PAYMENT', refId: pay.id });
   await markReversal(tx, pay.ledgerEntryId, rev.id, reason);
@@ -337,7 +340,7 @@ Header: `Authorization`, **`Idempotency-Key`** (wajib), `X-App-Version` (mobile)
 | `IDEMPOTENCY_KEY_REQUIRED` | 400 | Header tidak ada |
 
 ### 7.2 Void
-`POST /payments/{id}/void-requests` dan `POST /invoices/{id}/void` (butuh `reason`). Admin → `202 APPROVAL_REQUIRED`, Owner menyetujui via `POST /approvals/{id}/approve` yang mengeksekusi void. Error: `ALREADY_VOIDED` (409), `SETTLEMENT_CONFIRMED` (409).
+`POST /payments/{id}/void-requests` dan `POST /invoices/{id}/void` (butuh `reason`). Admin → `202 APPROVAL_REQUIRED`, Owner menyetujui via `POST /approvals/{id}/approve` yang mengeksekusi void. Error: `ALREADY_VOIDED` (409), `SETTLEMENT_CONFIRMED` (409), `PAYMENT_PARTIALLY_REFUNDED` (409).
 
 ---
 
@@ -586,6 +589,33 @@ Semua nominal rupiah (integer). Pelanggan awal: saldo 0, tanpa invoice. Format l
       "B": { "balance": -70000,  "totalDue": 70000,  "freeCredit": 0,
              "invoices": { "B-INV1": { "allocated": 80000, "status": "DIBAYAR_SEBAGIAN" } } }
     }
+  },
+  {
+    "id": "T21-void-pembayaran-setelah-refund-ditolak",
+    "steps": [
+      { "op": "issueInvoice", "as": "INV1", "total": 150000, "dueDate": "2027-01-10" },
+      { "op": "postPayment",  "as": "P1",   "amount": 200000 },
+      { "op": "refund", "amount": 50000 },
+      { "op": "voidPayment", "target": "P1", "expectError": "PAYMENT_PARTIALLY_REFUNDED" }
+    ],
+    "expect": {
+      "balance": 0, "freeCredit": 0, "totalDue": 0, "ledgerEntryCount": 3,
+      "invoices": { "INV1": { "allocated": 150000, "status": "LUNAS" } },
+      "payments": { "P1": { "voided": false } }
+    }
+  },
+  {
+    "id": "T22-void-tagihan-lunas-dana-jadi-deposit",
+    "steps": [
+      { "op": "issueInvoice", "as": "INV1", "total": 150000, "dueDate": "2027-01-10" },
+      { "op": "postPayment",  "as": "P1",   "amount": 150000 },
+      { "op": "voidInvoice",  "target": "INV1", "reason": "Salah pelanggan" }
+    ],
+    "expect": {
+      "balance": 150000, "freeCredit": 150000, "totalDue": 0, "ledgerEntryCount": 3,
+      "invoices": { "INV1": { "allocated": 0, "status": "BATAL" } }
+    },
+    "note": "Entri REVERSAL kredit (void tagihan) BUKAN sumber dana. Deposit 150000 berasal dari P1, bukan dari reversal (E-1)."
   }
 ]
 ```
@@ -606,6 +636,7 @@ Semua nominal rupiah (integer). Pelanggan awal: saldo 0, tanpa invoice. Format l
 | N-10 | Transaksi gagal di tengah (injeksi galat setelah ledger, sebelum alokasi) | Rollback penuh. Tidak ada entri/ nomor invoice yang tersisa |
 | N-11 | Pembayaran duplikat serupa < 5 menit tanpa `confirmDuplicate` | 409 `PAYMENT_DUPLICATE_SUSPECTED` |
 | N-12 | Void pembayaran pada setoran terkonfirmasi | 409 `SETTLEMENT_CONFIRMED` |
+| N-13 | Void pembayaran yang dananya sudah (sebagian) di-refund | 409 `PAYMENT_PARTIALLY_REFUNDED`, ledger tidak berubah |
 
 ---
 
@@ -613,7 +644,7 @@ Semua nominal rupiah (integer). Pelanggan awal: saldo 0, tanpa invoice. Format l
 
 | ID | Kriteria |
 | :--- | :--- |
-| **AC-L1** | **Given** vektor S1-S8, T9-T15 di Bagian 8, **when** dijalankan, **then** seluruh `expect` terpenuhi persis (saldo, status, alokasi, jumlah entri) |
+| **AC-L1** | **Given** vektor S1-S8, T9-T15, T21-T22 di Bagian 8, **when** dijalankan, **then** seluruh `expect` terpenuhi persis (saldo, status, alokasi, jumlah entri) |
 | **AC-L2** | **Given** operasi acak (terbit, bayar penuh/sebagian/lebih/bertarget, void pembayaran, void tagihan, impor saldo awal) minimal 1.000 urutan per eksekusi, **when** invarian I-1..I-8 diperiksa setelah **setiap** operasi, **then** tidak ada pelanggaran |
 | **AC-L3** | **Given** 50 pembayaran paralel dan 20 operasi campuran paralel pada satu pelanggan, **when** selesai, **then** invarian terpenuhi, `balance_after` berurutan tanpa celah/duplikat, dan tidak terjadi deadlock |
 | **AC-L4** | **Given** `Idempotency-Key` sama dikirim 10× paralel, **when** diproses, **then** tepat satu pembayaran terbentuk dan semua respons identik |
@@ -628,6 +659,7 @@ Semua nominal rupiah (integer). Pelanggan awal: saldo 0, tanpa invoice. Format l
 
 | Jenis | Lokasi / alat |
 | :--- | :--- |
+| **Model referensi (oracle)** `docs/test-plan/reference-model/` (vektor + uji properti + uji mutasi), dijalankan di CI sebagai pagar logika | `node run-vectors.mjs`, `node property-test.mjs` |
 | Unit murni (`reallocate`, urutan FIFO, penurunan status) | Vitest, tanpa DB |
 | Integrasi (vektor Bagian 8 + tes negatif) | Postgres nyata via Testcontainers. **Nama tes memuat ID vektor** (mis. `it('S3-lebih-bayar')`) |
 | **Properti** | fast-check: generator operasi acak + `checkInvariants` setelah tiap langkah (AC-L2) |
