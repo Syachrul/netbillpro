@@ -1,0 +1,50 @@
+// Memeriksa kebersihan decisions.log: entri ganda, entri tanpa ID, ID yang didefinisikan lebih dari sekali, urutan tanggal.
+// Pemakaian: node tools/check-decisions-log.mjs docs/decisions.log   (kode keluar 1 bila ada temuan)
+import { readFileSync } from 'node:fs';
+const path = process.argv[2]; if (!path) { console.error('pemakaian: node check-decisions-log.mjs <decisions.log>'); process.exit(2); }
+const lines = readFileSync(path, 'utf8').replace(/\r/g, '').split('\n');
+
+const entries = [];                       // {kind,date,id,text,line}
+let cur = null;
+const flush = () => { if (cur) { cur.text = cur.buf.join('\n').trim(); entries.push(cur); cur = null; } };
+lines.forEach((l, i) => {
+  let m;
+  if ((m = l.match(/^(\d{4}-\d{2}-\d{2}) \| ([^|]+?) \|/))) { flush(); entries.push({ kind: 'row', date: m[1], id: m[2].trim(), text: l, line: i + 1 }); }
+  else if ((m = l.match(/^\[(\d{4}-\d{2}-\d{2})\]\s+(.*)$/))) { flush(); cur = { kind: 'block', date: m[1], title: m[2].trim(), id: null, buf: [l], line: i + 1 }; }
+  else if (cur && !l.startsWith('# ')) cur.buf.push(l);
+  else if (cur && l.startsWith('# ')) flush();
+});
+flush();
+
+const norm = (t) => t.toLowerCase().replace(/\s+/g, ' ').replace(/^\[\d{4}-\d{2}-\d{2}\]/, '').trim();
+const toks = (t) => new Set(norm(t).split(/[^a-z0-9_\-<>=.]+/).filter(Boolean));
+const jac = (a, b) => { const i = [...a].filter(x => b.has(x)).length; return i / (a.size + b.size - i); };
+
+const findings = [];
+// 1) tanpa ID
+for (const e of entries) if (e.kind === 'block' && !/\b(D-\d+|OQ-\d+|OQ-[A-Z]\b|T\d+)\b/.test(e.title)) findings.push(`TANPA-ID   baris ${e.line}: "${e.title}"`);
+// 2) duplikat persis / hampir sama
+const blocks = entries.filter(e => e.kind === 'block');
+for (let i = 0; i < blocks.length; i++) for (let j = i + 1; j < blocks.length; j++) {
+  const a = blocks[i], b = blocks[j];
+  if (norm(a.text) === norm(b.text)) findings.push(`DUPLIKAT   baris ${b.line} identik dengan baris ${a.line} ("${a.title}")`);
+  else { const s = jac(toks(a.text), toks(b.text)); if (s >= 0.8) findings.push(`MIRIP-BEDA baris ${b.line} ~ baris ${a.line} (kemiripan ${(s * 100).toFixed(0)}%) tetapi isi berbeda: periksa mana yang berlaku`); }
+}
+// 3) ID yang didefinisikan >1 kali
+const defs = new Map();
+const addDef = (id, e) => defs.set(id, [...(defs.get(id) ?? []), e]);
+for (const e of entries) { if (e.kind === 'row') addDef(e.id, e); else for (const id of new Set(e.text.match(/\bOQ-\d+\b(?=\s*\()|\bOQ-[A-E]\b(?=\s*\()/g) ?? [])) addDef(id, e); }
+for (const [id, es] of defs) if (es.length > 1) {
+  const distinct = new Set(es.map(e => norm((e.text.split(id)[1] ?? '').split('\n')[0])));
+  findings.push(`ID-GANDA   ${id} muncul ${es.length}× (baris ${es.map(e => e.line).join(', ')})${distinct.size > 1 ? ' dengan isi BERBEDA → ada penggantian tanpa penanda SUPERSEDED' : ''}`);
+}
+// 4) urutan tanggal
+for (let i = 1; i < entries.length; i++) if (entries[i].date < entries[i - 1].date) findings.push(`URUTAN     baris ${entries[i].line} (${entries[i].date}) lebih lama dari entri sebelumnya (${entries[i - 1].date})`);
+// 5) entri baris tanpa status
+const hasStatus = lines.some(l => /status/i.test(l) && l.startsWith('# Format'));
+if (!hasStatus) findings.push('FORMAT     header tidak memiliki kolom Status; arti "Owner (default)" tidak terdefinisi per entri');
+
+console.log(`entri: ${entries.length} (baris tabel ${entries.filter(e => e.kind === 'row').length}, blok ${blocks.length})`);
+findings.forEach(f => console.log(' - ' + f));
+console.log(findings.length ? `\n${findings.length} temuan` : '\nbersih');
+process.exit(findings.length ? 1 : 0);

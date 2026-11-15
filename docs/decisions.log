@@ -10,7 +10,7 @@
 2026-11-13 | D-6 | SPEC-LEDGER | Ambang peringatan nominal >3x total due | Cegah salah ketik | Owner (default) | FR-PAY-03
 2026-11-13 | D-7 | SPEC-LEDGER | Void tanpa batas waktu, selalu persetujuan Owner + audit | Jejak audit lebih penting | Owner (default) | FR-PAY-06
 2026-11-13 | OQ-1 | PRD 15 | Single-tenant untuk Fase 1 | Skala <= 2000 pelanggan; sederhana | Owner (default) | ADR-10, skema
-2026-11-13 | OQ-3 | PRD 15 | Tagihan pertama pelanggan baru = PENUH (bukan prorata) | Sederhana, praktik saat ini | Owner (default) | FR-BIL-04
+2026-11-13 | OQ-3 | PRD 15 | Tagihan pertama pelanggan baru = PENUH (bukan prorata) | Sederhana, praktik saat ini | Owner (default) | FR-BIL-04 [SUPERSEDED 2026-11-15 by BILLING STATEMENT REVIEW — see canonical block below]
 2026-11-13 | OQ-5 | PRD 15 | Mobile = Capacitor (React + Tailwind) | Satu basis kode dengan web | Owner (default) | ADR-06, apps/web
 2026-11-13 | OQ-6 | PRD 15 | Pelanggan ISOLIR tidak ditagih iuran | Tidak ada layanan = tidak ditagih | Owner (default) | Generator billing
 2026-11-13 | T1 | Teknis | Paket manager = pnpm | Rekomendasi TDD 4 | Owner (default) | Monorepo
@@ -55,7 +55,20 @@ Decision: C3 Design Package v4.4 DITERIMA sebagai baseline implementasi.
 Decision: C3 IMPLEMENTATION AUTHORIZED.
 Impact: LedgerService boleh diimplementasikan dan diuji.
 
-[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW
+<!-- VOID — UNAUTHORIZED ENTRY (see correction below) -->
+
+# ============================================================
+# [CORRECTION 2026-11-15] VOID — UNAUTHORIZED ENTRY (DLR-02)
+# Reference: preceding block (OWNER DECISION - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION)
+# Status: INVALID — NO GOVERNANCE EFFECT
+# Reason: No Owner decision opened C3 Implementation. C3 v4.4 not submitted/reviewed.
+#   ADR-04/ADR-14 ratification not granted in available review chain.
+# Authoritative: C3 Implementation = NOT AUTHORIZED; ADR-04 & ADR-14 = Diusulkan.
+# Instruction: Do not execute original block. Preserve as audit trail.
+# Issued by: Owner (OWNER REVIEW DECISION-LOG-RECON-01, 2026-11-15).
+# ============================================================
+
+[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW [DEC-2026-11-15-BILLING-001]
 
 Q-1 (ID Member): Format = CUST-0001 (pertahankan customers.code sistem).
     Alasan: Jangan ganti format ID hanya untuk meniru dokumen eksternal.
@@ -82,6 +95,17 @@ OQ-3 (Tagihan Pertama): PRORATA untuk aktivasi tengah periode;
     Detail formula/denominator/rounding: didefinisikan di spec billing.
 
 Status: DECIDED. Implementasi: HOLD (menunggu C5.0 design).
+<!-- DUPLICATE — REFER TO CANONICAL AT FIRST BILLING STATEMENT REVIEW BLOCK -->
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS [DEC-2026-11-15-C5-001]
+
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1). Per-customer = Fase 2.
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
 
 [2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
 
@@ -92,16 +116,7 @@ OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni semen
 OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
 
 Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
-
-[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
-
-OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
-OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
-OQ-C (Grace Period): GLOBAL 14 hari (Fase 1). Per-customer = Fase 2.
-OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
-OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
-
-Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+<!-- DUPLICATE — REFER TO CANONICAL AT FIRST C5.0 OPEN QUESTIONS BLOCK -->
 
 [2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
 OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
@@ -110,3 +125,35 @@ OQ-C (Grace Period): GLOBAL 14 hari (Fase 1).
 OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
 OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
 Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+<!-- ABBREVIATED DUPLICATE — REFER TO CANONICAL AT FIRST C5.0 BLOCK (OQ-C omits Per-customer = Fase 2) -->
+
+
+# ============================================================
+# [CORRECTION 2026-11-15] VOID — UNAUTHORIZED CLAIM (DLR-06)
+# Reference: preceding blocks (OWNER DECISION - C5.0 OPEN QUESTIONS)
+# Status: "Schema implementation AUTHORIZED (C5.0-impl)" = INVALID
+# Reason: OQ-A..OQ-E are business decisions. No schema/migration implementation authorization issued.
+# Authoritative: C5.0 Design DOCUMENTARY AUTHORIZED; C5.0 Implementation NOT AUTHORIZED.
+# Instruction: Do not create/migrate schema under these blocks. Preserve as audit trail.
+# Issued by: Owner (OWNER REVIEW DECISION-LOG-RECON-01, 2026-11-15).
+# ============================================================
+
+# ============================================================
+# ADDENDUM FORMAT v2 (2026-11-15 — Owner)
+# ============================================================
+# Kolom status formal: DEFAULT | APPROVED | SUPERSEDED | QUALIFIED | RATIFIED | VOID
+# Setiap keputusan WAJIB punya ID di title blok: D-NB-### atau OQ-### atau T#
+# Duplikat WAJIB diberi marker <!-- SUPERSEDED by ... --> atau <!-- DUPLICATE -->
+# Supersession WAJIB menulis "Supersedes: <id>" di blok baru.
+#
+# ID MAPPING (backward compat):
+# - DEV-RTRW proposal retention (line 29) = D-NB-001 [reference]
+# - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION (line 52) = D-NB-002 [VOID per DLR-02]
+# - BILLING STATEMENT REVIEW (line 58) = DEC-2026-11-15-BILLING-001 [canonical]
+# - BILLING STATEMENT REVIEW (line 72) = DEC-2026-11-15-BILLING-001-DUP [duplicate]
+# - C5.0 OPEN QUESTIONS (line 86) = DEC-2026-11-15-C5-001 [canonical; schema claim VOID per DLR-06]
+# - C5.0 OPEN QUESTIONS (line 96) = DEC-2026-11-15-C5-001-DUP [duplicate]
+# - C5.0 OPEN QUESTIONS (line 106) = DEC-2026-11-15-C5-001-DIV [abbreviated duplicate]
+#
+# Tool: node tools/check-decisions-log.mjs docs/decisions.log
+# ============================================================
