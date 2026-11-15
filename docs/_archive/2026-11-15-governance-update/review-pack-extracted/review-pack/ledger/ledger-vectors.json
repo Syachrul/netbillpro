@@ -1,0 +1,756 @@
+[
+  {
+    "id": "S1-pembayaran-penuh",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 150000
+      }
+    ],
+    "expect": {
+      "balance": 0,
+      "freeCredit": 0,
+      "totalDue": 0,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 150000
+        }
+      ]
+    }
+  },
+  {
+    "id": "S2-cicilan",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 100000
+      }
+    ],
+    "expect": {
+      "balance": -50000,
+      "freeCredit": 0,
+      "totalDue": 50000,
+      "invoices": {
+        "INV1": {
+          "allocated": 100000,
+          "status": "DIBAYAR_SEBAGIAN"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 100000
+        }
+      ]
+    }
+  },
+  {
+    "id": "S3-lebih-bayar",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 200000
+      }
+    ],
+    "expect": {
+      "balance": 50000,
+      "freeCredit": 50000,
+      "totalDue": 0,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 150000
+        }
+      ]
+    }
+  },
+  {
+    "id": "S4-deposit-terpakai-bulan-berikut",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 200000
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2026-12-10"
+      }
+    ],
+    "expect": {
+      "balance": -100000,
+      "freeCredit": 0,
+      "totalDue": 100000,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        },
+        "INV2": {
+          "allocated": 50000,
+          "status": "DIBAYAR_SEBAGIAN"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 150000
+        },
+        {
+          "source": "P1",
+          "invoice": "INV2",
+          "amount": 50000
+        }
+      ]
+    },
+    "note": "E-2/D-1: status INV2 = DIBAYAR_SEBAGIAN karena deposit teralokasi. Konfirmasi Owner."
+  },
+  {
+    "id": "S5-tunggakan-terbawa",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 100000
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2026-12-10"
+      }
+    ],
+    "expect": {
+      "balance": -200000,
+      "freeCredit": 0,
+      "totalDue": 200000,
+      "invoices": {
+        "INV1": {
+          "allocated": 100000,
+          "status": "DIBAYAR_SEBAGIAN"
+        },
+        "INV2": {
+          "allocated": 0,
+          "status": "BELUM_LUNAS"
+        }
+      }
+    }
+  },
+  {
+    "id": "S6-bayar-FIFO-dua-tagihan",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 100000
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2026-12-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P2",
+        "amount": 200000
+      }
+    ],
+    "expect": {
+      "balance": 0,
+      "freeCredit": 0,
+      "totalDue": 0,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        },
+        "INV2": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 100000
+        },
+        {
+          "source": "P2",
+          "invoice": "INV1",
+          "amount": 50000
+        },
+        {
+          "source": "P2",
+          "invoice": "INV2",
+          "amount": 150000
+        }
+      ]
+    }
+  },
+  {
+    "id": "S7-void-pembayaran-dua-tagihan",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 100000
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2026-12-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P2",
+        "amount": 200000
+      },
+      {
+        "op": "voidPayment",
+        "target": "P2",
+        "reason": "Salah input nominal"
+      }
+    ],
+    "expect": {
+      "balance": -200000,
+      "freeCredit": 0,
+      "totalDue": 200000,
+      "ledgerEntryCount": 5,
+      "invoices": {
+        "INV1": {
+          "allocated": 100000,
+          "status": "DIBAYAR_SEBAGIAN"
+        },
+        "INV2": {
+          "allocated": 0,
+          "status": "BELUM_LUNAS"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 100000
+        }
+      ],
+      "payments": {
+        "P2": {
+          "voided": true
+        }
+      }
+    }
+  },
+  {
+    "id": "S8-refund-deposit (P1)",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2026-11-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 200000
+      },
+      {
+        "op": "refund",
+        "amount": 50000
+      }
+    ],
+    "expect": {
+      "balance": 0,
+      "freeCredit": 0,
+      "totalDue": 0,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      }
+    }
+  },
+  {
+    "id": "T9-tiga-tagihan-terbuka-FIFO",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2027-02-10"
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV3",
+        "total": 150000,
+        "dueDate": "2027-03-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 400000
+      }
+    ],
+    "expect": {
+      "balance": -50000,
+      "freeCredit": 0,
+      "totalDue": 50000,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        },
+        "INV2": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        },
+        "INV3": {
+          "allocated": 100000,
+          "status": "DIBAYAR_SEBAGIAN"
+        }
+      }
+    }
+  },
+  {
+    "id": "T9b-lanjutan-sisa-jadi-deposit",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2027-02-10"
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV3",
+        "total": 150000,
+        "dueDate": "2027-03-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 400000
+      },
+      {
+        "op": "postPayment",
+        "as": "P2",
+        "amount": 70000
+      }
+    ],
+    "expect": {
+      "balance": 20000,
+      "freeCredit": 20000,
+      "totalDue": 0,
+      "invoices": {
+        "INV3": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P2",
+          "invoice": "INV3",
+          "amount": 50000
+        }
+      ]
+    }
+  },
+  {
+    "id": "T10-pembayaran-bertarget",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2027-02-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 200000,
+        "target": "INV2"
+      }
+    ],
+    "expect": {
+      "balance": -100000,
+      "freeCredit": 0,
+      "totalDue": 100000,
+      "invoices": {
+        "INV2": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        },
+        "INV1": {
+          "allocated": 50000,
+          "status": "DIBAYAR_SEBAGIAN"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV2",
+          "amount": 150000
+        },
+        {
+          "source": "P1",
+          "invoice": "INV1",
+          "amount": 50000
+        }
+      ]
+    }
+  },
+  {
+    "id": "T11-void-tagihan-sebagian-dibayar",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 100000
+      },
+      {
+        "op": "issueInvoice",
+        "as": "INV2",
+        "total": 150000,
+        "dueDate": "2027-02-10"
+      },
+      {
+        "op": "voidInvoice",
+        "target": "INV1",
+        "reason": "Salah periode"
+      }
+    ],
+    "expect": {
+      "balance": -50000,
+      "freeCredit": 0,
+      "totalDue": 50000,
+      "invoices": {
+        "INV1": {
+          "allocated": 0,
+          "status": "BATAL"
+        },
+        "INV2": {
+          "allocated": 100000,
+          "status": "DIBAYAR_SEBAGIAN"
+        }
+      },
+      "allocations": [
+        {
+          "source": "P1",
+          "invoice": "INV2",
+          "amount": 100000
+        }
+      ]
+    },
+    "note": "Dana P1 terlepas dari INV1 lalu disalurkan ulang ke INV2. Entri REVERSAL kredit BUKAN sumber dana (E-1)."
+  },
+  {
+    "id": "T12a-50-pembayaran-paralel",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "parallel",
+        "repeat": 50,
+        "step": {
+          "op": "postPayment",
+          "amount": 3000
+        }
+      }
+    ],
+    "expect": {
+      "balance": 0,
+      "freeCredit": 0,
+      "ledgerEntryCount": 51,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "balanceAfterStrictlySequential": true
+    }
+  },
+  {
+    "id": "T12b-2-pembayaran-paralel-lebih",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "parallel",
+        "repeat": 2,
+        "step": {
+          "op": "postPayment",
+          "amount": 100000
+        }
+      }
+    ],
+    "expect": {
+      "balance": 50000,
+      "freeCredit": 50000,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "paymentCount": 2
+    }
+  },
+  {
+    "id": "T13-idempotensi",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 150000,
+        "idempotencyKey": "K1"
+      },
+      {
+        "op": "postPayment",
+        "amount": 150000,
+        "idempotencyKey": "K1",
+        "expectSameResponseAs": "P1"
+      },
+      {
+        "op": "postPayment",
+        "amount": 999000,
+        "idempotencyKey": "K1",
+        "expectError": "IDEMPOTENCY_CONFLICT"
+      }
+    ],
+    "expect": {
+      "paymentCount": 1,
+      "balance": 0,
+      "ledgerEntryCount": 2
+    }
+  },
+  {
+    "id": "T15-impor-saldo-awal",
+    "customers": {
+      "A": {
+        "openingBalance": -300000,
+        "dueDate": "2026-11-30"
+      },
+      "B": {
+        "openingBalance": 80000
+      }
+    },
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "customer": "A",
+        "as": "A-INV1",
+        "total": 150000,
+        "dueDate": "2026-12-10"
+      },
+      {
+        "op": "issueInvoice",
+        "customer": "B",
+        "as": "B-INV1",
+        "total": 150000,
+        "dueDate": "2026-12-10"
+      }
+    ],
+    "expect": {
+      "A": {
+        "balance": -450000,
+        "totalDue": 450000,
+        "freeCredit": 0
+      },
+      "B": {
+        "balance": -70000,
+        "totalDue": 70000,
+        "freeCredit": 0,
+        "invoices": {
+          "B-INV1": {
+            "allocated": 80000,
+            "status": "DIBAYAR_SEBAGIAN"
+          }
+        }
+      }
+    }
+  },
+  {
+    "id": "T21-void-pembayaran-setelah-refund-ditolak",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 200000
+      },
+      {
+        "op": "refund",
+        "amount": 50000
+      },
+      {
+        "op": "voidPayment",
+        "target": "P1",
+        "expectError": "PAYMENT_PARTIALLY_REFUNDED"
+      }
+    ],
+    "expect": {
+      "balance": 0,
+      "freeCredit": 0,
+      "totalDue": 0,
+      "ledgerEntryCount": 3,
+      "invoices": {
+        "INV1": {
+          "allocated": 150000,
+          "status": "LUNAS"
+        }
+      },
+      "payments": {
+        "P1": {
+          "voided": false
+        }
+      }
+    }
+  },
+  {
+    "id": "T22-void-tagihan-lunas-dana-jadi-deposit",
+    "steps": [
+      {
+        "op": "issueInvoice",
+        "as": "INV1",
+        "total": 150000,
+        "dueDate": "2027-01-10"
+      },
+      {
+        "op": "postPayment",
+        "as": "P1",
+        "amount": 150000
+      },
+      {
+        "op": "voidInvoice",
+        "target": "INV1",
+        "reason": "Salah pelanggan"
+      }
+    ],
+    "expect": {
+      "balance": 150000,
+      "freeCredit": 150000,
+      "totalDue": 0,
+      "ledgerEntryCount": 3,
+      "invoices": {
+        "INV1": {
+          "allocated": 0,
+          "status": "BATAL"
+        }
+      }
+    },
+    "note": "Entri REVERSAL kredit (void tagihan) BUKAN sumber dana. Deposit 150000 berasal dari P1, bukan dari reversal (E-1)."
+  }
+]

@@ -55,5 +55,7 @@
 | 35 ★ | Mengklaim "berhasil" tanpa menampilkan hasil tes | Bukti | Template PR |
 | 36 ★ | Satu sesi AI untuk banyak tugas; sesi baru tanpa membaca `STATE.md` | Kehilangan konteks | Playbook §8 |
 | 37 ★ | Merge ke `main` oleh AI; membuka zona merah (C3) tanpa checklist gerbang di `STATE.md` terpenuhi | Akuntabilitas | Branch protection + `STATE.md` |
-
-Jangan gunakan constructor injection tanpa @Inject() eksplisit di apps/api/src/modules/. Gunakan @Inject(Token) untuk semua dependency. Tanpa ini, NestJS gagal resolve dan menghasilkan error Cannot read properties of undefined di runtime.
+| 38 ★ | `git push`/force push/merge tanpa RELEASE authorization; mem-push checkpoint yang gagal | Melindungi `origin/main` | Branch protection - **BELUM ADA** |
+| 39 ★ | Menjalankan `TRUNCATE ... CASCADE` di luar basis data tes; memberi peran aplikasi hak `TRUNCATE` | Trigger baris tidak menghalangi TRUNCATE | Checklist B6 + trigger `BEFORE TRUNCATE` (usulan) |
+| 40 ★ | Menerapkan usulan koreksi berstatus `PROPOSED` pada kode | Belum disetujui Owner | `decisions.log` + review |
+| 41 ★ | Menyatakan tahap selesai tanpa bukti (source, diff, hasil tes) | Evidence rule | Template PR |
