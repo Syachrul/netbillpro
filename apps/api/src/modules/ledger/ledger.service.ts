@@ -235,7 +235,7 @@ export class LedgerService {
           data: { sourceLedgerId: a.sourceLedgerId, invoiceId: inv.id, amount: -a.amount },
         });
       }
-      await tx.invoice.update({ where: { id: inv.id }, data: { status: "BATAL", allocated: 0n } });
+      await tx.invoice.update({ where: { id: inv.id }, data: { status: "BATAL", allocated: 0n, voidedAt: new Date(), voidReason: reason } });
       await this.reallocate(tx, inv.customerId);
     }, TX_OPTIONS);
   }
