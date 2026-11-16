@@ -1,0 +1,28 @@
+--- timestamp: 2026-11-16T06:30:38Z ---
+--- HEAD: 552756e ---
+--- ahead: 21 ---
+--- behind: 0 ---
+--- dry-run exit: 0 ---
+
+--- git log origin/main..HEAD ---
+552756e docs(adr): reconcile ADR-04/14 status to Diterima (ratification fix v2)
+634f745 docs(governance): ratify C3 implementation as DEC-C3-RATIFY-001
+0c11ed1 docs(adr): expand ADR-14 to substantive v2 (~65 lines)
+f662308 docs(adr): expand ADR-04 to substantive v2 (~65 lines)
+786566c feat(ledger): add rejectSuspectedDuplicate to postPayment (B1-5)
+a48b78f fix(ledger): voidInvoice sets voidedAt + voidReason (B1-4)
+21e7676 feat(ledger): propagate Actor to ledgerEntry.createdBy (B1-3)
+cb5520e feat(ledger): add items support to issueInvoice (B1-2)
+93b3951 test(ledger): add tests for getLedger, getPosition, checkInvariants (B1-1b)
+77dfc61 feat(ledger): add read APIs getLedger, getPosition, checkInvariants (B1-1a)
+8b5f2d5 test(ledger): fix baseline — add recordedBy to postPayment calls (F-BL-1b)
+a6b6b95 docs: add docs/README.md navigation index (F-R2-6)
+a0b2b13 docs(governance): record C3 conflict as DEC-2026-11-16-GOVERNANCE-001
+2fa0f09 docs(spec): SPEC-INVOICE-DOCS-001 v1.0 skeleton draft
+0871ece docs(spec): SPEC-BILLING-001 v1.0 skeleton draft
+d4cdd9d docs(spec): SPEC-PKG-SUB-001 v1.1 cleanup — marker-based reconciliation
+27b1268 docs(governance): record F-3/F-9 backlog as DEC-SECURITY-002/003
+c06c40e fix(security): SEC-10 derive recordedBy from JWT subject (not body)
+a007b1c docs(governance): BATCH-2 decisions.log enrichment (Billing/C5 + security backlog)
+1df5857 test(api): B-2 payments-api auth flow fix (RED->GREEN)
+887d4f8 fix(governance): RECON-02 decisions.log reconciliation + checker v2.3
