@@ -148,7 +148,7 @@ Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
 #
 # ID MAPPING (backward compat):
 # - DEV-RTRW proposal retention (line 29) = D-NB-001 [reference]
-# - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION (line 52) = D-NB-002 [VOID per DLR-02]
+# - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION (line 52) = D-NB-002 [VOID per DLR-02; superseded by DEC-2026-11-16-C3-RATIFY-001]
 # - BILLING STATEMENT REVIEW (line 58) = DEC-2026-11-15-BILLING-001 [canonical]
 # - BILLING STATEMENT REVIEW (line 72) = DEC-2026-11-15-BILLING-001-DUP [duplicate]
 # - C5.0 OPEN QUESTIONS (line 86) = DEC-2026-11-15-C5-001 [canonical; schema claim VOID per DLR-06]
@@ -299,3 +299,82 @@ Related: DLR-02 (decisions.log:60-69), STATE.md, ADR-04, ADR-14,
 
 Status: RECORDED. Not resolved. Requires Owner explicit decision to select
 Option A/B/C. Documentary only — no code change in this block.
+
+[2026-11-16] OWNER DECISION - C3 IMPLEMENTATION RATIFICATION [DEC-2026-11-16-C3-RATIFY-001]
+
+Context: DLR-02 (RECON-02) VOID sebelumnya menyatakan C3 = NOT AUTHORIZED.
+Meanwhile STATE.md claimed C3 COMPLETED. Conflict recorded in
+DEC-2026-11-16-GOVERNANCE-001. This decision resolves by ratifying C3
+implementation as it currently stands, backed by B1-series drift
+correction + test evidence.
+
+Ratified scope (CODE):
+- apps/api/src/modules/ledger/ledger.service.ts (493 lines, post B1-5)
+- LedgerService public methods: postPayment, issueInvoice, voidPayment,
+  voidInvoice, refundDeposit, importOpeningBalance, getLedger,
+  getPosition, checkInvariants (9 methods — matches SPEC-LEDGER §4
+  except nextInvoiceNumber/outbox deferred)
+- Test suite: 27 tests across 8 files (ledger-implementation,
+  ledger-negative, ledger-property, ledger-read-api, ledger-items,
+  ledger-actor, ledger-void-audit, ledger-duplicate)
+
+Ratified scope (ADR):
+- ADR-0004 (FIFO allocation + reallocate) — v2 substantive (65 lines),
+  status Diusulkan -> Diterima
+- ADR-0014 (modul compile-time + manifest) — v2 substantive (65 lines),
+  status Diusulkan -> Diterima (design accepted; manifest implementation
+  deferred but not blocking C3)
+
+B1 drift closure (5/7 SPEC-LEDGER §4 drifts resolved):
+- F-Z-4  void asymmetry             -> B1-4  commit a48b78f
+- F-Z-5  items support              -> B1-2  commit cb5520e
+- F-Z-8  duplicate detection        -> B1-5  commit 786566c
+- F-Z-9  actor propagation          -> B1-3  commit 21e7676
+- F-Z-10 read APIs                  -> B1-1a 77dfc61 + B1-1b 93b3951
+
+Deferred (schema/DLR-06 blocked, NOT blocking ratification):
+- F-Z-6  nextInvoiceNumber counter  -> needs invoice_number_sequences table
+  (schema change). Current caller-provided number works; period uniqueness
+  enforced by invoices.number UNIQUE constraint at DB level.
+- F-Z-7  outbox event publishing    -> needs outbox table + ADR-05 accept
+  (schema change). Events currently not published; no downstream consumer
+  built yet.
+- F-B1-4-1 Payment.voidReason       -> needs Payment.voidReason column
+  (schema change). voidPayment reason currently recorded only as
+  LedgerReversal entry, not on Payment row.
+- F-B1-1a-2 checkInvariants I-3..I-8 -> I-1 (balance chain) + I-2
+  (allocated<=total) implemented; remaining invariants deferred to
+  post-ratification work unit (implementation-only, no schema block).
+
+Ratification status: QUALIFIED — code is substantively correct, tested,
+and matches SPEC-LEDGER intent. Deferred items are schema-blocked or
+implementation-only, explicitly tracked, and do NOT compromise safety
+of the ratified scope (money movement, voiding, allocation, audit).
+
+Baseline state verified (Phase B1-A2, F-BL-1b, B1-1..5 series):
+- pnpm typecheck baseline: 19 pre-existing errors (F-B1-1a-1 deferred
+  to separate tsconfig work unit; not introduced by B1 series)
+- pnpm vitest ledger suite: 27/27 pass
+- Property test: 50 random sequences pass
+- DB invariants N-7 (invoice dup), N-9 (append-only) pass
+
+Preserved authorizations (unchanged by this ratification):
+- C3 IMPLEMENTATION: AUTHORIZED — LIMITED to code at commit 786566c.
+  Future changes to LedgerService require new authorization.
+- C5.0 SCHEMA IMPLEMENTATION: NOT AUTHORIZED (DLR-06).
+- C5.2 IMPLEMENTATION: NOT AUTHORIZED.
+- DB/MIGRATION/BUILD/RUNTIME changes (beyond ratified scope):
+  NOT AUTHORIZED.
+- Push to origin: HOLD (separate directive required).
+
+Supersedes: DLR-02 VOID block (line 60-69 of decisions.log) — the VOID
+remains in log as historical audit trail (RECON-02 convention preserved),
+but governance effect is superseded by this ratification. Cross-reference
+added to ADDENDUM ID MAPPING (D-NB-002 entry).
+
+Related: DEC-2026-11-16-GOVERNANCE-001 (conflict recorded), RECON-02
+(original VOID), SPEC-LEDGER-001 v1.1, ADR-0004 v2, ADR-0014 v2,
+B1-1a..B1-5 commits.
+
+Status: RATIFIED (QUALIFIED). Implementation authorized within scope
+above. Deferred items tracked. No schema change authorized by this block.
