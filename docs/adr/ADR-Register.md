@@ -18,7 +18,7 @@ Mengubah ADR = tambah ADR baru yang menggantikan. Jangan mengedit alasan keputus
 | [ADR-01](adr/ADR-0001.md) | Modular monolith | **Diterima** | Struktur repo Tahap B (api, worker, web, shared) | Sebagian: batas modul belum ditegakkan lint (verifikasi di C3) |
 | [ADR-02](adr/ADR-0002.md) | PostgreSQL sebagai DB utama | **Diterima** | Tahap C0-C1, Testcontainers (C2-1/2) | Ya |
 | [ADR-03](adr/ADR-0003.md) | Ledger append-only + balance_after | **Diterima** | Trigger/CHECK terverifikasi di Tahap C0-C1 (STATE) | Sebagian: skema ada; LedgerService belum (C3) |
-| [ADR-04](adr/ADR-0004.md) | Alokasi pembayaran eksplisit (FIFO) + fungsi tunggal reallocate | **Diusulkan** | Menunggu persetujuan **sebelum C3** (gerbang) | Belum (C3) |
+| [ADR-04](adr/ADR-0004.md) | Alokasi pembayaran eksplisit (FIFO) + fungsi tunggal reallocate | **Diterima** | DEC-2026-11-16-C3-RATIFY-001 (v2 substantive; B1 series verified) | Ya (B1 series, commit 786566c) |
 | [ADR-05](adr/ADR-0005.md) | Transactional outbox + BullMQ | **Diusulkan** | Menunggu persetujuan sebelum Sprint notifikasi (S5) | Belum |
 | [ADR-06](adr/ADR-0006.md) | Mobile: React + Tailwind + Capacitor | **Diterima** | OQ-5 FINAL (D-2026-11-13-OQ-5) | Belum (M4) |
 | [ADR-07](adr/ADR-0007.md) | TypeScript di seluruh stack (monorepo) | **Diterima** | Tahap B (monorepo shared/api/web/worker) | Ya |
@@ -28,7 +28,7 @@ Mengubah ADR = tambah ADR baru yang menggantikan. Jangan mengedit alasan keputus
 | [ADR-11](adr/ADR-0011.md) | JWT access pendek + refresh rotasi | **Diusulkan** | Menunggu persetujuan sebelum modul auth | Belum |
 | [ADR-12](adr/ADR-0012.md) | Docker Compose pada satu VPS | **Diterima** | Tahap B (Docker Compose) | Ya (lokal/CI). Produksi belum |
 | [ADR-13](adr/ADR-0013.md) | Object storage S3-compatible | **Diusulkan** | Menunggu persetujuan sebelum S5/S7 | Belum |
-| [ADR-14](adr/ADR-0014.md) | Modul compile-time + manifest + feature flag | **Diusulkan** | Menunggu persetujuan sebelum C3 | Belum |
+| [ADR-14](adr/ADR-0014.md) | Modul compile-time + manifest + feature flag | **Diterima** | DEC-2026-11-16-C3-RATIFY-001 (v2 substantive; design accepted) | Sebagian (monorepo modular; manifest deferred) |
 | [ADR-15](adr/ADR-0015.md) | Katalog domain event berversi | **Diusulkan** | Menunggu katalog event final (blokir Contracts, lihat STATE) | Belum |
 | [ADR-16](adr/ADR-0016.md) | Ports & Adapters (MessageChannel, StorageProvider, PdfRenderer, dst.) | **Diusulkan** | Menunggu persetujuan sebelum S5 | Belum |
 | [ADR-17](adr/ADR-0017.md) | Metode bayar/jenis item berbasis data | **Diusulkan** | Menunggu persetujuan sebelum perubahan skema berikutnya | Belum: verifikasi apakah skema C0-C1 memakai enum |
@@ -40,6 +40,8 @@ Mengubah ADR = tambah ADR baru yang menggantikan. Jangan mengedit alasan keputus
 
 ## Gerbang persetujuan sebelum C3 (LedgerService)
 ADR yang **harus berstatus Diterima** sebelum C3 dibuka: **ADR-03, ADR-04, ADR-09, ADR-14, ADR-19, ADR-22**. Saat ini **ADR-04 dan ADR-14 masih Diusulkan**: setujui (atau ubah) keduanya lebih dulu.
+**Update 2026-11-16:** ADR-04 dan ADR-14 telah **Diterima** via `DEC-2026-11-16-C3-RATIFY-001`. Semua 6 ADR gerbang C3 kini berstatus Diterima. C3 diimplementasi (LedgerService, commit `786566c`) dan diratifikasi (QUALIFIED).
+
 ADR yang harus Diterima sebelum sprint notifikasi (S5): ADR-05, ADR-08, ADR-13, ADR-16.
 
 ## Catatan rekonsiliasi
