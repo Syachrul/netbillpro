@@ -1,0 +1,37 @@
+diff --git a/apps/api/src/modules/ledger/ledger.service.ts b/apps/api/src/modules/ledger/ledger.service.ts
+index 61aaf1a..ef48d6a 100644
+--- a/apps/api/src/modules/ledger/ledger.service.ts
++++ b/apps/api/src/modules/ledger/ledger.service.ts
+@@ -70,6 +70,7 @@ export class LedgerService {
+         }
+       }
+ 
++      await this.rejectSuspectedDuplicate(tx, input);
+       const idempotencyKey = input.idempotencyKey ?? randomUUID();
+       const prevBalance = await this.getLastBalance(tx, input.customerId);
+       const payment = await tx.payment.create({
+@@ -348,6 +349,24 @@ export class LedgerService {
+     );
+   }
+ 
++  private async rejectSuspectedDuplicate(tx: any, input: PostPaymentInput): Promise<void> {
++    if (!input.idempotencyKey) return;
++    const cutoff = new Date(Date.now() - 60 * 1000);
++    const recent = await tx.payment.findFirst({
++      where: {
++        customerId: input.customerId,
++        amount: input.amount,
++        method: input.method,
++        voidedAt: null,
++        idempotencyKey: { not: input.idempotencyKey },
++        createdAt: { gte: cutoff },
++      },
++    });
++    if (recent) {
++      throw new Error("SUSPECTED_DUPLICATE");
++    }
++  }
++
+   private async reallocate(tx: any, customerId: string): Promise<any[]> {
+     const sources = await this.getFreeCreditSources(tx, customerId);
+     if (sources.length === 0) return [];

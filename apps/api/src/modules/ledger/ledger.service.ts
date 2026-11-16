@@ -70,6 +70,7 @@ export class LedgerService {
         }
       }
 
+      await this.rejectSuspectedDuplicate(tx, input);
       const idempotencyKey = input.idempotencyKey ?? randomUUID();
       const prevBalance = await this.getLastBalance(tx, input.customerId);
       const payment = await tx.payment.create({
@@ -346,6 +347,24 @@ export class LedgerService {
         ` ORDER BY l.seq ASC`,
       customerId
     );
+  }
+
+  private async rejectSuspectedDuplicate(tx: any, input: PostPaymentInput): Promise<void> {
+    if (!input.idempotencyKey) return;
+    const cutoff = new Date(Date.now() - 60 * 1000);
+    const recent = await tx.payment.findFirst({
+      where: {
+        customerId: input.customerId,
+        amount: input.amount,
+        method: input.method,
+        voidedAt: null,
+        idempotencyKey: { not: input.idempotencyKey },
+        createdAt: { gte: cutoff },
+      },
+    });
+    if (recent) {
+      throw new Error("SUSPECTED_DUPLICATE");
+    }
   }
 
   private async reallocate(tx: any, customerId: string): Promise<any[]> {
