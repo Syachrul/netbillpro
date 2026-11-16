@@ -1,0 +1,256 @@
+# decisions.log
+# Format: YYYY-MM-DD | ID | Sumber | Keputusan | Alasan | Oleh | Dampak
+# Status "Default sementara" = dipakai sampai Owner menjawab; ubah via change request.
+
+2026-11-13 | D-1 | SPEC-LEDGER | Invoice sebagian dibayar oleh deposit -> status DIBAYAR_SEBAGIAN | Konsisten dengan tabel status SPEC 3.3 | Owner (default) | FR-BIL-06, INV status, S4
+2026-11-13 | D-2 | SPEC-LEDGER | Void pembayaran di setoran kolektor terkonfirmasi -> ditolak sampai Owner buka setoran | Cegah kebocoran kas | Owner (default) | FR-PAY-06, FR-PAY-07
+2026-11-13 | D-3 | SPEC-LEDGER | Invoice total = 0 ditolak | CHECK debit/kredit butuh > 0 | Owner (default) | FR-BIL, validasi
+2026-11-13 | D-4 | SPEC-LEDGER | Pembayaran dari pelanggan BERHENTI diizinkan (melunasi tunggakan) | Tidak ada alasan menolak pelunasan | Owner (default) | FR-PAY-01
+2026-11-13 | D-5 | SPEC-LEDGER | due_date invoice SALDO_AWAL = tanggal cut-off bila tidak ada di data impor | Konsisten | Owner (default) | FR-CUS-06, aging
+2026-11-13 | D-6 | SPEC-LEDGER | Ambang peringatan nominal >3x total due | Cegah salah ketik | Owner (default) | FR-PAY-03
+2026-11-13 | D-7 | SPEC-LEDGER | Void tanpa batas waktu, selalu persetujuan Owner + audit | Jejak audit lebih penting | Owner (default) | FR-PAY-06
+2026-11-13 | OQ-1 | PRD 15 | Single-tenant untuk Fase 1 | Skala <= 2000 pelanggan; sederhana | Owner (default) | ADR-10, skema
+2026-11-13 | OQ-3 | PRD 15 | Tagihan pertama pelanggan baru = PENUH (bukan prorata) | Sederhana, praktik saat ini | Owner (default) | FR-BIL-04 [SUPERSEDED 2026-11-15 by BILLING STATEMENT REVIEW — see canonical block below]
+2026-11-13 | OQ-5 | PRD 15 | Mobile = Capacitor (React + Tailwind) | Satu basis kode dengan web | Owner (default) | ADR-06, apps/web
+2026-11-13 | OQ-6 | PRD 15 | Pelanggan ISOLIR tidak ditagih iuran | Tidak ada layanan = tidak ditagih | Owner (default) | Generator billing
+2026-11-13 | T1 | Teknis | Paket manager = pnpm | Rekomendasi TDD 4 | Owner (default) | Monorepo
+2026-11-13 | T2 | Teknis | ORM = Prisma + SQL mentah untuk ledger | Produktif CRUD, eksplisit untuk uang | Owner (default) | apps/api
+2026-11-13 | T3 | Teknis | Belum git init; menunggu konfirmasi | Hindari init tak sengaja | - | -
+
+# ---- OQ yang belum dijawab (menunggu Owner) ----
+# OQ-2  Jumlah pelanggan saat go-live & 12 bulan ke depan?
+# OQ-4  Denda/diskon/PPN otomatis?
+# OQ-7  Satu pelanggan boleh >1 langganan/titik?
+# OQ-8  Penyedia WhatsApp Gateway?
+# OQ-9  Siapa berhak menyetujui void? Dua tingkat?
+# OQ-10 Hosting & anggaran infrastruktur?
+# OQ-11 Pelanggan boleh self-registration?
+
+[2026-11-13] OWNER DECISION - DEV-RTRW-2026-001 v1.0
+
+Decision: OPTION A1 - RETAIN AS GOVERNANCE PROPOSAL.
+
+The document is classified as PROPOSED / NOT APPROVED.
+It shall be placed under docs/proposals/ and recorded
+in the decisions log as a proposal pending review.
+
+No governance baseline, PRD, TDD, ADR, executable contract,
+test, dependency, migration, or implementation scope is
+changed by this decision.
+
+The proposal does not automatically block the existing C2
+workstream. C2 progression remains subject to its existing
+checkpoint evidence and authorization.
+
+Future governance reconciliation shall be conducted as a
+separate, bounded activity after the applicable C3 checkpoint.
+
+Provenance: UNKNOWN / NOT VERIFIED.
+Approval: NOT APPROVED.
+Integration: NOT AUTHORIZED.
+
+[2026-11-15] OWNER DECISION - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION
+Decision: ADR-04 dan ADR-14 DIRATIFIKASI menjadi Diterima.
+Decision: C3 Design Package v4.4 DITERIMA sebagai baseline implementasi.
+Decision: C3 IMPLEMENTATION AUTHORIZED.
+Impact: LedgerService boleh diimplementasikan dan diuji.
+
+<!-- VOID — UNAUTHORIZED ENTRY (see correction below) -->
+
+# ============================================================
+# [CORRECTION 2026-11-15] VOID — UNAUTHORIZED ENTRY (DLR-02)
+# Reference: preceding block (OWNER DECISION - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION)
+# Status: INVALID — NO GOVERNANCE EFFECT
+# Reason: No Owner decision opened C3 Implementation. C3 v4.4 not submitted/reviewed.
+#   ADR-04/ADR-14 ratification not granted in available review chain.
+# Authoritative: C3 Implementation = NOT AUTHORIZED; ADR-04 & ADR-14 = Diusulkan.
+# Instruction: Do not execute original block. Preserve as audit trail.
+# Issued by: Owner (OWNER REVIEW DECISION-LOG-RECON-01, 2026-11-15).
+# ============================================================
+
+[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW [DEC-2026-11-15-BILLING-001]
+
+Q-1 (ID Member): Format = CUST-0001 (pertahankan customers.code sistem).
+    Alasan: Jangan ganti format ID hanya untuk meniru dokumen eksternal.
+Q-2 (username_hotspot): Masuk desain C5.0. Unique dalam scope sistem.
+    Wajib/opsional: perlu keputusan terpisah di spec C5.0.
+Q-3 (Batas Isolir): due_date + 14 hari (configurable via settings).
+    Disimpan di invoice snapshot agar tidak retroaktif.
+OQ-3 (Tagihan Pertama): PRORATA untuk aktivasi tengah periode;
+    PENUH untuk aktivasi awal periode.
+    Detail formula/denominator/rounding: didefinisikan di spec billing.
+
+Status: DECIDED. Implementasi: HOLD (menunggu C5.0 design).
+
+[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW
+
+Q-1 (ID Member): Format = CUST-0001 (pertahankan customers.code sistem).
+    Alasan: Jangan ganti format ID hanya untuk meniru dokumen eksternal.
+Q-2 (username_hotspot): Masuk desain C5.0. Unique dalam scope sistem.
+    Wajib/opsional: perlu keputusan terpisah di spec C5.0.
+Q-3 (Batas Isolir): due_date + 14 hari (configurable via settings).
+    Disimpan di invoice snapshot agar tidak retroaktif.
+OQ-3 (Tagihan Pertama): PRORATA untuk aktivasi tengah periode;
+    PENUH untuk aktivasi awal periode.
+    Detail formula/denominator/rounding: didefinisikan di spec billing.
+
+Status: DECIDED. Implementasi: HOLD (menunggu C5.0 design).
+<!-- DUPLICATE — REFER TO CANONICAL AT FIRST BILLING STATEMENT REVIEW BLOCK -->
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS [DEC-2026-11-15-C5-001]
+
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1). Per-customer = Fase 2.
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
+
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1). Per-customer = Fase 2.
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+<!-- DUPLICATE — REFER TO CANONICAL AT FIRST C5.0 OPEN QUESTIONS BLOCK -->
+
+[2026-11-15] OWNER DECISION - C5.0 OPEN QUESTIONS
+OQ-A (username_hotspot): OPSIONAL. Unique partial index WHERE username_hotspot IS NOT NULL.
+OQ-B (Prorata vs Diskon): PRORATA DULU, diskon item terpisah.
+OQ-C (Grace Period): GLOBAL 14 hari (Fase 1).
+OQ-D (Diskon Mei 2026): TBD - perlu data historis. Billing = prorata murni sementara.
+OQ-E (Invoice Number): PER PERIODE. Format INV/YYYY/MM/0001.
+Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
+<!-- ABBREVIATED DUPLICATE — REFER TO CANONICAL AT FIRST C5.0 BLOCK (OQ-C omits Per-customer = Fase 2) -->
+
+
+# ============================================================
+# [CORRECTION 2026-11-15] VOID — UNAUTHORIZED CLAIM (DLR-06)
+# Reference: preceding blocks (OWNER DECISION - C5.0 OPEN QUESTIONS)
+# Status: "Schema implementation AUTHORIZED (C5.0-impl)" = INVALID
+# Reason: OQ-A..OQ-E are business decisions. No schema/migration implementation authorization issued.
+# Authoritative: C5.0 Design DOCUMENTARY AUTHORIZED; C5.0 Implementation NOT AUTHORIZED.
+# Instruction: Do not create/migrate schema under these blocks. Preserve as audit trail.
+# Issued by: Owner (OWNER REVIEW DECISION-LOG-RECON-01, 2026-11-15).
+# ============================================================
+
+# ============================================================
+# ADDENDUM FORMAT v2 (2026-11-15 — Owner)
+# ============================================================
+# Kolom status formal: DEFAULT | APPROVED | SUPERSEDED | QUALIFIED | RATIFIED | VOID
+# Setiap keputusan WAJIB punya ID di title blok: D-NB-### atau OQ-### atau T#
+# Duplikat WAJIB diberi marker <!-- SUPERSEDED by ... --> atau <!-- DUPLICATE -->
+# Supersession WAJIB menulis "Supersedes: <id>" di blok baru.
+#
+# ID MAPPING (backward compat):
+# - DEV-RTRW proposal retention (line 29) = D-NB-001 [reference]
+# - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION (line 52) = D-NB-002 [VOID per DLR-02]
+# - BILLING STATEMENT REVIEW (line 58) = DEC-2026-11-15-BILLING-001 [canonical]
+# - BILLING STATEMENT REVIEW (line 72) = DEC-2026-11-15-BILLING-001-DUP [duplicate]
+# - C5.0 OPEN QUESTIONS (line 86) = DEC-2026-11-15-C5-001 [canonical; schema claim VOID per DLR-06]
+# - C5.0 OPEN QUESTIONS (line 96) = DEC-2026-11-15-C5-001-DUP [duplicate]
+# - C5.0 OPEN QUESTIONS (line 106) = DEC-2026-11-15-C5-001-DIV [abbreviated duplicate]
+#
+# Tool: node tools/check-decisions-log.mjs docs/decisions.log
+# ============================================================
+
+[2026-11-15] OWNER DECISION - BILLING C5 ROADMAP ENRICHMENT [DEC-2026-11-15-BILLINGC5-001]
+
+Formula (item 1): IsolationDate = DueDate + GracePeriod — explicit formula decision.
+GracePeriod snapshot (item 2): reconstructable dari invoice snapshot; perubahan config
+    tidak retroaktif — setiap invoice memegang snapshot GracePeriod saat issue.
+Config changes (item 3): non-retroactive — config baru hanya berlaku untuk invoice
+    yang di-issue setelah perubahan; invoice lama mempertahankan nilai snapshot.
+Arrears lintas periode (item 4): DECIDED — tagihan menunggak lintas periode ikut
+    statement period berjalan, dihitung dari ledger.
+Status menunggak (item 5): DERIVED, bukan stored — status menunggak dihitung dari
+    ledger state, bukan kolom tersimpan; menghindari drift dan race condition.
+Statement PDF (item 6): snapshot per issue date — PDF statement immutable,
+    merepresentasikan state pada tanggal issue.
+Ledger reconciliation (item 7): invariant — rekonsiliasi mengacu ke ledger entries,
+    bukan sekadar arithmetic sum; audit trail terjaga.
+Roadmap order (item 8): C5.2 HOLD -> C5.0 documentary AUTHORIZED -> Billing spec
+    -> Invoice Documents. Urutan eksplisit: prasyarat dokumentasi sebelum implementasi.
+ADR-08 (item 9): referensi pdfmake untuk PDF generation.
+    C5.0 documentary: AUTHORIZED (docs saja).
+    C5.2 implementation: HOLD (menunggu Billing spec).
+
+Supersedes: none
+Related: DEC-2026-11-15-BILLING-001, DEC-2026-11-15-C5-001, ADR-08
+
+Status: APPROVED. Enrichment terhadap base Billing/C5 decisions; tidak mengganti
+    DLR-01..DLR-06 yang sudah closed di RECON-02. Bukan koreksi base decision.
+
+[2026-11-16] OWNER DECISION - SECURITY BACKLOG RECORDEDBY [DEC-2026-11-16-SECURITY-001]
+
+Finding (item 10): recordedBy pada apps/api/src/modules/payments/payments.controller.ts
+    diambil dari body.recordedBy (payload client), bukan dari authenticated subject
+    (req.user.id dari JwtGuard).
+    Implikasi: client bisa claim user ID sembarang -> audit trail payment dapat dipalsukan.
+
+Recommendation: derive recordedBy dari JWT subject (req.user.id), ignore body field.
+Scope fix (future, belum dieksekusi):
+    - Controller change (1 file: payments.controller.ts)
+    - API contract review (payload recordedBy deprecated atau removal)
+    - Frontend impact assessment
+    - Test adjustment (payments-api.test.ts assertion recordedBy = token subject)
+
+Supersedes: none
+Related: B-2 commit 1df5857 (out-of-scope finding recorded at Phase 3 diff review)
+
+Status: RECORDED. Backlog item. No implementation authorized. Requires separate
+    Owner directive to authorize fix. Tracked as batch 2 item #10.
+
+[2026-11-16] OWNER DECISION - DTO VALIDATION GAP [DEC-2026-11-16-SECURITY-002]
+
+Finding: payments.controller.ts menggunakan @Body() body: any — tidak ada DTO
+    validation. Semua field payload (customerId, amount, method, paidAt,
+    invoiceId) diterima tanpa validasi tipe/format.
+    Attack surface: malformed payload -> error handling inconsistency,
+    potential field mismatch, sulit di-test untuk negative case.
+
+Recommendation: introduce CreatePaymentDto dengan class-validator decorators
+    (atau validator strategy yang konsisten dengan module lain di codebase).
+    Cross-cutting: DTO strategy mungkin perlu ADR tersendiri untuk konsistensi
+    lintas module (customers, packages, invoices, payments).
+
+Scope (future, belum dieksekusi):
+    - CreatePaymentDto definition
+    - class-validator atau pilihan strategy final
+    - Module-wide validation strategy alignment (ADR candidate)
+    - Negative test cases
+
+Supersedes: none
+Related: DEC-2026-11-16-SECURITY-001, commit c06c40e
+
+Status: RECORDED. Backlog item. No implementation authorized. Requires ADR
+    untuk validation strategy sebelum implementasi. Tracked as F-3.
+
+[2026-11-16] OWNER DECISION - JWT_SECRET FALLBACK [DEC-2026-11-16-SECURITY-003]
+
+Finding: auth.module.ts line ~8:
+    const JWT_SECRET = process.env.JWT_SECRET ?? "netbill-dev-secret-change-in-prod"
+    Fallback hardcoded ke string predictable bila env JWT_SECRET tidak di-set.
+    Risk: production deployment tanpa JWT_SECRET env -> token signable dengan
+    known secret -> auth bypass total.
+
+Recommendation: fail-fast pada startup bila JWT_SECRET tidak di-set di
+    non-development environment. Optional: Dev default hanya bila NODE_ENV
+    explicit "development" atau "test".
+
+Scope (future, belum dieksekusi):
+    - auth.module.ts: validation + fail-fast
+    - Deployment documentation: JWT_SECRET required
+    - CI/CD: env check (bila ada pipeline)
+    - Test: auth.module test untuk fail-fast behavior
+
+Supersedes: none
+Related: DEC-2026-11-16-SECURITY-001, commit c06c40e (F-9 observed saat
+    Phase 1b assessment)
+
+Status: RECORDED. Backlog item. No implementation authorized. Deployment
+    config + infra review needed. Tracked as F-9.

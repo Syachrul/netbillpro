@@ -1,0 +1,53 @@
+diff --git a/docs/decisions.log b/docs/decisions.log
+index 15373d9..2ebf059 100644
+--- a/docs/decisions.log
++++ b/docs/decisions.log
+@@ -254,3 +254,48 @@ Related: DEC-2026-11-16-SECURITY-001, commit c06c40e (F-9 observed saat
+ 
+ Status: RECORDED. Backlog item. No implementation authorized. Deployment
+     config + infra review needed. Tracked as F-9.
++
++[2026-11-16] OWNER DECISION - C3 GOVERNANCE CONFLICT RECORD [DEC-2026-11-16-GOVERNANCE-001]
++
++Finding (from Phase R3 evidence capture, 2026-11-16):
++Contradiction between decisions.log and STATE.md regarding C3 status.
++
++decisions.log (authoritative per DLR-02):
++- Lines 52-57: [2026-11-15] OWNER DECISION - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION
++  Status: VOID per DLR-02 correction (lines 60-69).
++- Lines 60-69: [CORRECTION 2026-11-15] VOID — UNAUTHORIZED ENTRY (DLR-02)
++  Authoritative: C3 Implementation = NOT AUTHORIZED.
++  ADR-04 & ADR-14 = Diusulkan (proposed).
++
++STATE.md:
++- Line 6: "C3 & C4 COMPLETED. LedgerService lulus 18 vektor dan 50 urutan properti acak."
++- Line 11: "C3: LedgerService (postPayment, issueInvoice, voidPayment, voidInvoice, refundDeposit, importOpeningBalance)."
++
++Conflict interpretation (3 non-exclusive possibilities):
++1. C3 code implemented BEFORE DLR-02 correction (RECON-02, 2026-11-15).
++   Correction is retrospective governance enforcement.
++2. C3 implemented via non-recorded Owner authorization (verbal/chat).
++   Governance gap: decision exists but not documented in decisions.log.
++3. STATE.md is aspirational: developer assumed C3 authorized when not.
++   Documentation drift from governance reality.
++
++Impact on downstream work (documentary):
++- C5.0 documentary (SPEC-BILLING-001, SPEC-INVOICE-DOCS-001) can proceed —
++  documentation is factual, not authorization.
++- New specs refer to C3 as "code exists per STATE.md; governance status =
++  DLR-02 VOID" — not "C3 authorized".
++- No new C3 implementation authorized by this record.
++
++Recommendation (Owner decision needed):
++Option A: Accept C3 code as pre-correction implementation. Retroactively issue
++    ADR-04/ADR-14 acceptance + C3 IMPLEMENTATION AUTHORIZED via new decision.
++Option B: Require explicit authorization flow for C3. If code review of current
++    LedgerService passes, issue new authorization. If not, code reverts / refactors.
++Option C: Void C3 code. Revert to pre-C3 state, rebuild under proper authorization.
++
++Supersedes: none
++Related: DLR-02 (decisions.log:60-69), STATE.md, ADR-04, ADR-14,
++    SPEC-LEDGER-001 v1.1 (documents current LedgerService behavior)
++
++Status: RECORDED. Not resolved. Requires Owner explicit decision to select
++Option A/B/C. Documentary only — no code change in this block.
