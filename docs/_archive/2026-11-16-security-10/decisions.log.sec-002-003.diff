@@ -1,0 +1,58 @@
+diff --git a/docs/decisions.log b/docs/decisions.log
+index 7379731..15373d9 100644
+--- a/docs/decisions.log
++++ b/docs/decisions.log
+@@ -204,3 +204,53 @@ Related: B-2 commit 1df5857 (out-of-scope finding recorded at Phase 3 diff revie
+ 
+ Status: RECORDED. Backlog item. No implementation authorized. Requires separate
+     Owner directive to authorize fix. Tracked as batch 2 item #10.
++
++[2026-11-16] OWNER DECISION - DTO VALIDATION GAP [DEC-2026-11-16-SECURITY-002]
++
++Finding: payments.controller.ts menggunakan @Body() body: any — tidak ada DTO
++    validation. Semua field payload (customerId, amount, method, paidAt,
++    invoiceId) diterima tanpa validasi tipe/format.
++    Attack surface: malformed payload -> error handling inconsistency,
++    potential field mismatch, sulit di-test untuk negative case.
++
++Recommendation: introduce CreatePaymentDto dengan class-validator decorators
++    (atau validator strategy yang konsisten dengan module lain di codebase).
++    Cross-cutting: DTO strategy mungkin perlu ADR tersendiri untuk konsistensi
++    lintas module (customers, packages, invoices, payments).
++
++Scope (future, belum dieksekusi):
++    - CreatePaymentDto definition
++    - class-validator atau pilihan strategy final
++    - Module-wide validation strategy alignment (ADR candidate)
++    - Negative test cases
++
++Supersedes: none
++Related: DEC-2026-11-16-SECURITY-001, commit c06c40e
++
++Status: RECORDED. Backlog item. No implementation authorized. Requires ADR
++    untuk validation strategy sebelum implementasi. Tracked as F-3.
++
++[2026-11-16] OWNER DECISION - JWT_SECRET FALLBACK [DEC-2026-11-16-SECURITY-003]
++
++Finding: auth.module.ts line ~8:
++    const JWT_SECRET = process.env.JWT_SECRET ?? "netbill-dev-secret-change-in-prod"
++    Fallback hardcoded ke string predictable bila env JWT_SECRET tidak di-set.
++    Risk: production deployment tanpa JWT_SECRET env -> token signable dengan
++    known secret -> auth bypass total.
++
++Recommendation: fail-fast pada startup bila JWT_SECRET tidak di-set di
++    non-development environment. Optional: Dev default hanya bila NODE_ENV
++    explicit "development" atau "test".
++
++Scope (future, belum dieksekusi):
++    - auth.module.ts: validation + fail-fast
++    - Deployment documentation: JWT_SECRET required
++    - CI/CD: env check (bila ada pipeline)
++    - Test: auth.module test untuk fail-fast behavior
++
++Supersedes: none
++Related: DEC-2026-11-16-SECURITY-001, commit c06c40e (F-9 observed saat
++    Phase 1b assessment)
++
++Status: RECORDED. Backlog item. No implementation authorized. Deployment
++    config + infra review needed. Tracked as F-9.
