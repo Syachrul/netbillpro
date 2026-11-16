@@ -1,0 +1,14 @@
+--- HEAD: 1df5857 ---
+--- captured: 2026-11-16T03:09:20Z ---
+
+--- checker baseline exit: 0 ---
+--- probe exit (new DEC ID): 0 ---
+
+--- probe block ---
+
+[DEC-2026-11-15-BILLING-C5-ROADMAP]
+Date: 2026-11-15
+Status: ACTIVE
+Supersedes: none
+Related: DEC-2026-11-15-BILLING-001, DEC-2026-11-15-C5-001, ADR-08
+Content: PROBE — verifikasi bahwa checker menerima DEC ID ini.

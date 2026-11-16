@@ -1,0 +1,13 @@
+--- HEAD: 1df5857 ---
+--- captured: 2026-11-16T03:10:24Z ---
+--- baseline: entries=21 blocks=7 ---
+--- probe:    entries=23 blocks=9 exit=0 ---
+--- gate:     true ---
+
+--- probe checker output ---
+entri: 23 (baris tabel 14, blok 9)
+markers: VOID=1, DUP=2, ABBREV-DUP=1, SUPERSEDED=1
+corrections: DLR-02=true, DLR-06=true
+mappings: 7 entries, 2 canonical
+
+bersih

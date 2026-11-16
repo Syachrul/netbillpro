@@ -157,3 +157,50 @@ Status: DECIDED. Schema implementation AUTHORIZED (C5.0-impl).
 #
 # Tool: node tools/check-decisions-log.mjs docs/decisions.log
 # ============================================================
+
+[2026-11-15] OWNER DECISION - BILLING C5 ROADMAP ENRICHMENT [DEC-2026-11-15-BILLINGC5-001]
+
+Formula (item 1): IsolationDate = DueDate + GracePeriod — explicit formula decision.
+GracePeriod snapshot (item 2): reconstructable dari invoice snapshot; perubahan config
+    tidak retroaktif — setiap invoice memegang snapshot GracePeriod saat issue.
+Config changes (item 3): non-retroactive — config baru hanya berlaku untuk invoice
+    yang di-issue setelah perubahan; invoice lama mempertahankan nilai snapshot.
+Arrears lintas periode (item 4): DECIDED — tagihan menunggak lintas periode ikut
+    statement period berjalan, dihitung dari ledger.
+Status menunggak (item 5): DERIVED, bukan stored — status menunggak dihitung dari
+    ledger state, bukan kolom tersimpan; menghindari drift dan race condition.
+Statement PDF (item 6): snapshot per issue date — PDF statement immutable,
+    merepresentasikan state pada tanggal issue.
+Ledger reconciliation (item 7): invariant — rekonsiliasi mengacu ke ledger entries,
+    bukan sekadar arithmetic sum; audit trail terjaga.
+Roadmap order (item 8): C5.2 HOLD -> C5.0 documentary AUTHORIZED -> Billing spec
+    -> Invoice Documents. Urutan eksplisit: prasyarat dokumentasi sebelum implementasi.
+ADR-08 (item 9): referensi pdfmake untuk PDF generation.
+    C5.0 documentary: AUTHORIZED (docs saja).
+    C5.2 implementation: HOLD (menunggu Billing spec).
+
+Supersedes: none
+Related: DEC-2026-11-15-BILLING-001, DEC-2026-11-15-C5-001, ADR-08
+
+Status: APPROVED. Enrichment terhadap base Billing/C5 decisions; tidak mengganti
+    DLR-01..DLR-06 yang sudah closed di RECON-02. Bukan koreksi base decision.
+
+[2026-11-16] OWNER DECISION - SECURITY BACKLOG RECORDEDBY [DEC-2026-11-16-SECURITY-001]
+
+Finding (item 10): recordedBy pada apps/api/src/modules/payments/payments.controller.ts
+    diambil dari body.recordedBy (payload client), bukan dari authenticated subject
+    (req.user.id dari JwtGuard).
+    Implikasi: client bisa claim user ID sembarang -> audit trail payment dapat dipalsukan.
+
+Recommendation: derive recordedBy dari JWT subject (req.user.id), ignore body field.
+Scope fix (future, belum dieksekusi):
+    - Controller change (1 file: payments.controller.ts)
+    - API contract review (payload recordedBy deprecated atau removal)
+    - Frontend impact assessment
+    - Test adjustment (payments-api.test.ts assertion recordedBy = token subject)
+
+Supersedes: none
+Related: B-2 commit 1df5857 (out-of-scope finding recorded at Phase 3 diff review)
+
+Status: RECORDED. Backlog item. No implementation authorized. Requires separate
+    Owner directive to authorize fix. Tracked as batch 2 item #10.
