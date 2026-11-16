@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers, HttpException, HttpStatus, Inject, UseGuards } from "@nestjs/common";
+import { Controller, Post, Body, Headers, Req, HttpException, HttpStatus, Inject, UseGuards } from "@nestjs/common";
 import { LedgerService } from "../ledger/ledger.service";
 import { rupiah } from "@netbill/shared";
 import { JwtGuard } from "../auth/jwt.guard";
@@ -12,12 +12,17 @@ export class PaymentsController {
 
   @Post()
   @Roles("OWNER", "ADMIN", "KOLEKTOR")
-  async create(@Body() body: any, @Headers("idempotency-key") idempotencyKey: string) {
+  async create(
+    @Body() body: any,
+    @Headers("idempotency-key") idempotencyKey: string,
+    @Req() req: any,
+  ) {
     if (!idempotencyKey) {
       throw new HttpException("Idempotency-Key header is required", HttpStatus.BAD_REQUEST);
     }
-    if (!body.recordedBy) {
-      throw new HttpException("recordedBy is required", HttpStatus.BAD_REQUEST);
+    const recordedBy = req.user?.sub;
+    if (!recordedBy) {
+      throw new HttpException("Token missing subject", HttpStatus.UNAUTHORIZED);
     }
     try {
       const result = await this.ledgerService.postPayment({
@@ -27,7 +32,7 @@ export class PaymentsController {
         paidAt: new Date(body.paidAt),
         invoiceId: body.invoiceId,
         idempotencyKey,
-        recordedBy: body.recordedBy,
+        recordedBy,
       });
       return { paymentId: result.paymentId, balance: result.balance.toString() };
     } catch (e: any) {

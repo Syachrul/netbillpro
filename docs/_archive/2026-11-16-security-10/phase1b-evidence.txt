@@ -1,0 +1,79 @@
+--- HEAD: a007b1c ---
+--- captured: 2026-11-16T03:16:04Z ---
+
+=== auth.service.ts ===
+import { Injectable, Inject } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { JwtService } from "@nestjs/jwt";
+import * as argon2 from "argon2";
+
+@Injectable()
+export class AuthService {
+  constructor(
+    @Inject(PrismaClient) private readonly prisma: PrismaClient,
+    @Inject(JwtService) private readonly jwtService: JwtService
+  ) {}
+
+  async hashPassword(password: string): Promise<string> {
+    return argon2.hash(password);
+  }
+
+  async login(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user || !user.isActive) {
+      throw new Error("AUTH_INVALID_CREDENTIALS");
+    }
+    const valid = await argon2.verify(user.passwordHash, password);
+    if (!valid) {
+      throw new Error("AUTH_INVALID_CREDENTIALS");
+    }
+    const payload = { sub: user.id, role: user.role, name: user.name };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return {
+      accessToken,
+      user: { id: user.id, role: user.role, name: user.name, email: user.email },
+    };
+  }
+}
+
+=== auth.controller.ts ===
+import { Controller, Post, Body, HttpException, HttpStatus, Inject } from "@nestjs/common";
+import { AuthService } from "./auth.service";
+
+@Controller("auth")
+export class AuthController {
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
+
+  @Post("login")
+  async login(@Body() body: { email: string; password: string }) {
+    try {
+      return await this.authService.login(body.email, body.password);
+    } catch (e: any) {
+      throw new HttpException(e.message, HttpStatus.UNAUTHORIZED);
+    }
+  }
+}
+
+=== auth.module.ts ===
+import { Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { PrismaClient } from "@prisma/client";
+import { AuthService } from "./auth.service";
+import { AuthController } from "./auth.controller";
+import { JwtGuard } from "./jwt.guard";
+import { RolesGuard } from "./roles.guard";
+
+const JWT_SECRET = process.env.JWT_SECRET ?? "netbill-dev-secret-change-in-prod";
+
+@Module({
+  imports: [
+    JwtModule.register({
+      secret: JWT_SECRET,
+      signOptions: { expiresIn: "15m" },
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtGuard, RolesGuard, PrismaClient],
+  exports: [AuthService, JwtGuard, RolesGuard, JwtModule],
+})
+export class AuthModule {}

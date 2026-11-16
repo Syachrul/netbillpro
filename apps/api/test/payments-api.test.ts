@@ -154,4 +154,33 @@ describe("C5.2 Payments API (HTTP)", () => {
     }
     expect(res.statusCode).toBe(409);
   });
+
+  it("POST /payments ignores client recordedBy — uses token subject", async () => {
+    const c = await createCustomer(ctx.prisma);
+    const WRONG_ID = "99999999-9999-9999-9999-999999999999";
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/payments",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "idempotency-key": "K3-SPOOF",
+      },
+      payload: {
+        customerId: c.id,
+        amount: 50000,
+        method: "TUNAI",
+        paidAt: new Date().toISOString(),
+        recordedBy: WRONG_ID,  // spoof attempt — must be ignored
+      },
+    });
+
+    expect(res.statusCode).toBe(201);
+
+    const stored = await ctx.prisma.payment.findUnique({
+      where: { idempotencyKey: "K3-SPOOF" },
+    });
+    expect(stored?.recordedBy).toBe(DUMMY_ADMIN_ID);  // token subject, NOT spoof
+  });
+
 }, 180_000);

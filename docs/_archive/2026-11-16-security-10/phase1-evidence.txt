@@ -1,0 +1,14 @@
+--- HEAD: a007b1c ---
+--- captured: 2026-11-16T03:14:20Z ---
+
+=== recordedBy grep results (persisted) ===
+apps/api/src/modules/ledger/ledger.service.ts:13:  recordedBy: string;
+apps/api/src/modules/ledger/ledger.service.ts:68:          recordedBy: input.recordedBy,
+apps/api/src/modules/payments/payments.controller.ts:19:    if (!body.recordedBy) {
+apps/api/src/modules/payments/payments.controller.ts:20:      throw new HttpException("recordedBy is required", HttpStatus.BAD_REQUEST);
+apps/api/src/modules/payments/payments.controller.ts:30:        recordedBy: body.recordedBy,
+apps/api/test/payments-api.test.ts:40:    // Seed ADMIN user with explicit DUMMY_ADMIN_ID (matches recordedBy in payload)
+apps/api/test/payments-api.test.ts:72:        recordedBy: DUMMY_ADMIN_ID,
+apps/api/test/payments-api.test.ts:105:        recordedBy: DUMMY_ADMIN_ID,
+apps/api/test/payments-api.test.ts:132:        recordedBy: DUMMY_ADMIN_ID,
+apps/api/test/payments-api.test.ts:148:        recordedBy: DUMMY_ADMIN_ID,
