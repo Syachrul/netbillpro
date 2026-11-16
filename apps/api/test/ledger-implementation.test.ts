@@ -4,6 +4,8 @@ import { createCustomer, truncateAll } from "./fixtures";
 import { rupiah } from "@netbill/shared";
 import { LedgerService } from "../src/modules/ledger/ledger.service";
 
+const DUMMY_ADMIN_ID = "00000000-0000-0000-0000-000000000001";
+
 describe("C3.7 Final: S8, T15, T21, T22", () => {
   let ctx: TestContext;
   let service: LedgerService;
@@ -19,7 +21,7 @@ describe("C3.7 Final: S8, T15, T21, T22", () => {
   it("S8: Refund deposit", async () => {
     const c = await createCustomer(ctx.prisma);
     await service.issueInvoice({ customerId: c.id, total: rupiah(150000), dueDate: new Date("2026-11-10"), number: "INV1", period: "2026-11" });
-    await service.postPayment({ customerId: c.id, amount: rupiah(200000), method: "TUNAI", paidAt: new Date() });
+    await service.postPayment({ customerId: c.id, amount: rupiah(200000), method: "TUNAI", paidAt: new Date(), recordedBy: DUMMY_ADMIN_ID });
     await service.refundDeposit({ customerId: c.id, amount: rupiah(50000) });
 
     const pos = await ctx.prisma.ledgerEntry.aggregate({ where: { customerId: c.id }, _sum: { kredit: true, debit: true } });
@@ -50,7 +52,7 @@ describe("C3.7 Final: S8, T15, T21, T22", () => {
   it("T21: Void payment setelah refund ditolak", async () => {
     const c = await createCustomer(ctx.prisma);
     await service.issueInvoice({ customerId: c.id, total: rupiah(150000), dueDate: new Date("2026-11-10"), number: "INV1", period: "2026-11" });
-    const pay = await service.postPayment({ customerId: c.id, amount: rupiah(200000), method: "TUNAI", paidAt: new Date() });
+    const pay = await service.postPayment({ customerId: c.id, amount: rupiah(200000), method: "TUNAI", paidAt: new Date(), recordedBy: DUMMY_ADMIN_ID });
     await service.refundDeposit({ customerId: c.id, amount: rupiah(50000) });
 
     await expect(service.voidPayment(pay.paymentId, "Test")).rejects.toThrow(/PAYMENT_ALREADY_REFUNDED/);
@@ -59,7 +61,7 @@ describe("C3.7 Final: S8, T15, T21, T22", () => {
   it("T22: Void invoice lunas, dana jadi deposit", async () => {
     const c = await createCustomer(ctx.prisma);
     const inv = await service.issueInvoice({ customerId: c.id, total: rupiah(150000), dueDate: new Date("2026-11-10"), number: "INV1", period: "2026-11" });
-    await service.postPayment({ customerId: c.id, amount: rupiah(150000), method: "TUNAI", paidAt: new Date() });
+    await service.postPayment({ customerId: c.id, amount: rupiah(150000), method: "TUNAI", paidAt: new Date(), recordedBy: DUMMY_ADMIN_ID });
 
     await service.voidInvoice(inv.id, "Salah periode");
 

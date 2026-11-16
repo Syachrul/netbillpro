@@ -1,0 +1,6 @@
+--- HEAD: a6b6b95 ---
+--- captured: 2026-11-16T04:08:10Z ---
+--- impl exit: 1 ---
+--- neg exit:  0 ---
+--- prop exit: 0 ---
+--- overall: RED ---

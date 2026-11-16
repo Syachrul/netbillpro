@@ -1,0 +1,188 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+ [32m✓[39m test/ledger-negative.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 25022[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-7: Duplicate active monthly invoice harus ditolak (P2002) [33m1138[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-9: Append-only protection (UPDATE & DELETE ditolak di kedua tabel) [33m817[2mms[22m[39m
+ [31m❯[39m test/ledger-implementation.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 25147[2mms[22m[39m
+[31m   [31m×[31m C3.7 Final: S8, T15, T21, T22[2m > [22mS8: Refund deposit[33m 1237[2mms[22m[31m[39m
+[31m     → 
+Invalid `tx.payment.create()` invocation in
+F:\Project\NEW RTRWNET\apps\api\src\modules\ledger\ledger.service.ts:62:40
+
+  59 
+  60 const idempotencyKey = input.idempotencyKey ?? randomUUID();
+  61 const prevBalance = await this.getLastBalance(tx, input.customerId);
+→ 62 const payment = await tx.payment.create({
+       data: {
+         customerId: "a0ca6732-4f29-44ea-9175-1dadf545e516",
+         amount: 200000n,
+         method: "TUNAI",
+         paidAt: new Date("2026-11-16T04:05:59.615Z"),
+         idempotencyKey: "9acf0add-a549-4188-86d0-aaf4abe1bebc",
+     +   recordedBy: String
+       }
+     })
+
+Argument `recordedBy` is missing.[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT15: Impor saldo awal (tunggakan & deposit) [33m1074[2mms[22m[39m
+[31m   [31m×[31m C3.7 Final: S8, T15, T21, T22[2m > [22mT21: Void payment setelah refund ditolak[33m 752[2mms[22m[31m[39m
+[31m     → 
+Invalid `tx.payment.create()` invocation in
+F:\Project\NEW RTRWNET\apps\api\src\modules\ledger\ledger.service.ts:62:40
+
+  59 
+  60 const idempotencyKey = input.idempotencyKey ?? randomUUID();
+  61 const prevBalance = await this.getLastBalance(tx, input.customerId);
+→ 62 const payment = await tx.payment.create({
+       data: {
+         customerId: "fa46c08e-fd96-4407-85d7-32c4280b1e2c",
+         amount: 200000n,
+         method: "TUNAI",
+         paidAt: new Date("2026-11-16T04:06:01.479Z"),
+         idempotencyKey: "62fb827d-c83d-4e02-bd78-4a90bb37b3f6",
+     +   recordedBy: String
+       }
+     })
+
+Argument `recordedBy` is missing.[39m
+[31m   [31m×[31m C3.7 Final: S8, T15, T21, T22[2m > [22mT22: Void invoice lunas, dana jadi deposit[33m 432[2mms[22m[31m[39m
+[31m     → 
+Invalid `tx.payment.create()` invocation in
+F:\Project\NEW RTRWNET\apps\api\src\modules\ledger\ledger.service.ts:62:40
+
+  59 
+  60 const idempotencyKey = input.idempotencyKey ?? randomUUID();
+  61 const prevBalance = await this.getLastBalance(tx, input.customerId);
+→ 62 const payment = await tx.payment.create({
+       data: {
+         customerId: "318e9780-7242-4145-90fd-1a1880e9c22f",
+         amount: 150000n,
+         method: "TUNAI",
+         paidAt: new Date("2026-11-16T04:06:01.922Z"),
+         idempotencyKey: "19754a31-c3c9-484d-82ea-5aec20959d0d",
+     +   recordedBy: String
+       }
+     })
+
+Argument `recordedBy` is missing.[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 3 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m test/ledger-implementation.test.ts[2m > [22mC3.7 Final: S8, T15, T21, T22[2m > [22mS8: Refund deposit
+[31m[1mPrismaClientValidationError[22m: 
+Invalid `tx.payment.create()` invocation in
+F:\Project\NEW RTRWNET\apps\api\src\modules\ledger\ledger.service.ts:62:40
+
+  59 
+  60 const idempotencyKey = input.idempotencyKey ?? randomUUID();
+  61 const prevBalance = await this.getLastBalance(tx, input.customerId);
+→ 62 const payment = await tx.payment.create({
+       data: {
+         customerId: "a0ca6732-4f29-44ea-9175-1dadf545e516",
+         amount: 200000n,
+         method: "TUNAI",
+         paidAt: new Date("2026-11-16T04:05:59.615Z"),
+         idempotencyKey: "9acf0add-a549-4188-86d0-aaf4abe1bebc",
+     +   recordedBy: String
+       }
+     })
+
+Argument `recordedBy` is missing.[39m
+[90m [2m❯[22m wn ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m29:1363[22m[39m
+[90m [2m❯[22m $n.handleRequestError ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6958[22m[39m
+[90m [2m❯[22m $n.handleAndLogRequestError ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6623[22m[39m
+[90m [2m❯[22m $n.request ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6307[22m[39m
+[90m [2m❯[22m l ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m130:9633[22m[39m
+[36m [2m❯[22m src/modules/ledger/ledger.service.ts:[2m62:23[22m[39m
+    [90m 60| [39m      [35mconst[39m idempotencyKey [33m=[39m input[33m.[39midempotencyKey [33m??[39m [34mrandomUUID[39m()[33m;[39m
+    [90m 61| [39m      [35mconst[39m prevBalance [33m=[39m [35mawait[39m [35mthis[39m[33m.[39m[34mgetLastBalance[39m(tx[33m,[39m input[33m.[39mcustomer…
+    [90m 62| [39m      [35mconst[39m payment [33m=[39m [35mawait[39m tx[33m.[39mpayment[33m.[39m[34mcreate[39m({
+    [90m   | [39m                      [31m^[39m
+    [90m 63| [39m        data[33m:[39m {
+    [90m 64| [39m          customerId[33m:[39m input[33m.[39mcustomerId[33m,[39m
+[90m [2m❯[22m Proxy._transactionWithCallback ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m130:8000[22m[39m
+[90m [2m❯[22m test/ledger-implementation.test.ts:[2m22:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m test/ledger-implementation.test.ts[2m > [22mC3.7 Final: S8, T15, T21, T22[2m > [22mT21: Void payment setelah refund ditolak
+[31m[1mPrismaClientValidationError[22m: 
+Invalid `tx.payment.create()` invocation in
+F:\Project\NEW RTRWNET\apps\api\src\modules\ledger\ledger.service.ts:62:40
+
+  59 
+  60 const idempotencyKey = input.idempotencyKey ?? randomUUID();
+  61 const prevBalance = await this.getLastBalance(tx, input.customerId);
+→ 62 const payment = await tx.payment.create({
+       data: {
+         customerId: "fa46c08e-fd96-4407-85d7-32c4280b1e2c",
+         amount: 200000n,
+         method: "TUNAI",
+         paidAt: new Date("2026-11-16T04:06:01.479Z"),
+         idempotencyKey: "62fb827d-c83d-4e02-bd78-4a90bb37b3f6",
+     +   recordedBy: String
+       }
+     })
+
+Argument `recordedBy` is missing.[39m
+[90m [2m❯[22m wn ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m29:1363[22m[39m
+[90m [2m❯[22m $n.handleRequestError ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6958[22m[39m
+[90m [2m❯[22m $n.handleAndLogRequestError ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6623[22m[39m
+[90m [2m❯[22m $n.request ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6307[22m[39m
+[90m [2m❯[22m l ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m130:9633[22m[39m
+[36m [2m❯[22m src/modules/ledger/ledger.service.ts:[2m62:23[22m[39m
+    [90m 60| [39m      [35mconst[39m idempotencyKey [33m=[39m input[33m.[39midempotencyKey [33m??[39m [34mrandomUUID[39m()[33m;[39m
+    [90m 61| [39m      [35mconst[39m prevBalance [33m=[39m [35mawait[39m [35mthis[39m[33m.[39m[34mgetLastBalance[39m(tx[33m,[39m input[33m.[39mcustomer…
+    [90m 62| [39m      [35mconst[39m payment [33m=[39m [35mawait[39m tx[33m.[39mpayment[33m.[39m[34mcreate[39m({
+    [90m   | [39m                      [31m^[39m
+    [90m 63| [39m        data[33m:[39m {
+    [90m 64| [39m          customerId[33m:[39m input[33m.[39mcustomerId[33m,[39m
+[90m [2m❯[22m Proxy._transactionWithCallback ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m130:8000[22m[39m
+[90m [2m❯[22m test/ledger-implementation.test.ts:[2m53:17[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m test/ledger-implementation.test.ts[2m > [22mC3.7 Final: S8, T15, T21, T22[2m > [22mT22: Void invoice lunas, dana jadi deposit
+[31m[1mPrismaClientValidationError[22m: 
+Invalid `tx.payment.create()` invocation in
+F:\Project\NEW RTRWNET\apps\api\src\modules\ledger\ledger.service.ts:62:40
+
+  59 
+  60 const idempotencyKey = input.idempotencyKey ?? randomUUID();
+  61 const prevBalance = await this.getLastBalance(tx, input.customerId);
+→ 62 const payment = await tx.payment.create({
+       data: {
+         customerId: "318e9780-7242-4145-90fd-1a1880e9c22f",
+         amount: 150000n,
+         method: "TUNAI",
+         paidAt: new Date("2026-11-16T04:06:01.922Z"),
+         idempotencyKey: "19754a31-c3c9-484d-82ea-5aec20959d0d",
+     +   recordedBy: String
+       }
+     })
+
+Argument `recordedBy` is missing.[39m
+[90m [2m❯[22m wn ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m29:1363[22m[39m
+[90m [2m❯[22m $n.handleRequestError ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6958[22m[39m
+[90m [2m❯[22m $n.handleAndLogRequestError ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6623[22m[39m
+[90m [2m❯[22m $n.request ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m121:6307[22m[39m
+[90m [2m❯[22m l ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m130:9633[22m[39m
+[36m [2m❯[22m src/modules/ledger/ledger.service.ts:[2m62:23[22m[39m
+    [90m 60| [39m      [35mconst[39m idempotencyKey [33m=[39m input[33m.[39midempotencyKey [33m??[39m [34mrandomUUID[39m()[33m;[39m
+    [90m 61| [39m      [35mconst[39m prevBalance [33m=[39m [35mawait[39m [35mthis[39m[33m.[39m[34mgetLastBalance[39m(tx[33m,[39m input[33m.[39mcustomer…
+    [90m 62| [39m      [35mconst[39m payment [33m=[39m [35mawait[39m tx[33m.[39mpayment[33m.[39m[34mcreate[39m({
+    [90m   | [39m                      [31m^[39m
+    [90m 63| [39m        data[33m:[39m {
+    [90m 64| [39m          customerId[33m:[39m input[33m.[39mcustomerId[33m,[39m
+[90m [2m❯[22m Proxy._transactionWithCallback ../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:[2m130:8000[22m[39m
+[90m [2m❯[22m test/ledger-implementation.test.ts:[2m62:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 11:05:35
+[2m   Duration [22m 27.79s[2m (transform 244ms, setup 0ms, collect 3.29s, tests 50.17s, environment 1ms, prepare 589ms)[22m
+

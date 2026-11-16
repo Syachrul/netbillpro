@@ -1,0 +1,12 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+ [32m✓[39m test/ledger-property.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 22213[2mms[22m[39m
+   [33m[2m✓[22m[39m C4 Property Testing[2m > [22mUrutan operasi acak tidak boleh melanggar Invarian [33m10600[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 11:07:44
+[2m   Duration [22m 24.73s[2m (transform 181ms, setup 0ms, collect 1.76s, tests 22.21s, environment 0ms, prepare 266ms)[22m
+
