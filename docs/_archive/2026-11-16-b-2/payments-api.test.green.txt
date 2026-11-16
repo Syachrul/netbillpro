@@ -1,0 +1,14 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+ [32m✓[39m test/payments-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 40589[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments tanpa Idempotency-Key -> 400 [33m2611[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments dengan Idempotency-Key -> 201 [33m4935[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments payload beda key sama -> 409 [33m1862[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 07:31:06
+[2m   Duration [22m 51.07s[2m (transform 847ms, setup 0ms, collect 8.34s, tests 40.59s, environment 0ms, prepare 500ms)[22m
+

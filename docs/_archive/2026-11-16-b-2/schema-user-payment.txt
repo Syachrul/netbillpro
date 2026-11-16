@@ -1,0 +1,61 @@
+--- source: ./apps/api/prisma/schema.prisma ---
+--- captured HEAD: 887d4f8 ---
+--- captured at: 2026-11-16T00:18:39Z ---
+
+--- model User ---
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role         UserRole
+  name         String
+  email        String   @unique
+  phone        String?  @unique
+  passwordHash String   @map("password_hash")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("users")
+}
+
+--- model Payment ---
+model Payment {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId     String    @map("customer_id") @db.Uuid
+  amount         BigInt
+  method         PayMethod
+  paidAt         DateTime  @map("paid_at") @db.Date
+  note           String?
+  proofKey       String?   @map("proof_key")
+  recordedBy     String    @map("recorded_by") @db.Uuid
+  idempotencyKey String    @unique @map("idempotency_key")
+  voidedAt       DateTime? @map("voided_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([customerId, paidAt], map: "ix_payments_customer_paid")
+  @@map("payments")
+}
+
+--- enum Role (jika ada) ---
+--- captured at: 2026-11-16T00:20:14Z ---
+
+--- enum UserRole ---
+enum UserRole {
+  OWNER
+  ADMIN
+  KOLEKTOR
+  CLIENT
+
+  @@map("user_role")
+}
+
+--- enum PayMethod ---
+enum PayMethod {
+  TUNAI
+  TRANSFER_BANK
+  E_WALLET
+
+  @@map("pay_method")
+}
+

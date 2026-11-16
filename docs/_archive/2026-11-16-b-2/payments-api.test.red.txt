@@ -1,0 +1,82 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+[90mstderr[2m | test/payments-api.test.ts[2m > [22m[2mC5.2 Payments API (HTTP)[2m > [22m[2mPOST /payments dengan Idempotency-Key -> 201
+[22m[39mUnexpected: [33m401[39m {"message":"Missing or invalid Authorization header","error":"Unauthorized","statusCode":401}
+
+[90mstderr[2m | test/payments-api.test.ts[2m > [22m[2mC5.2 Payments API (HTTP)[2m > [22m[2mPOST /payments payload beda key sama -> 409
+[22m[39mUnexpected: [33m401[39m {"message":"Missing or invalid Authorization header","error":"Unauthorized","statusCode":401}
+
+ [31m❯[39m test/payments-api.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 23093[2mms[22m[39m
+[31m   [31m×[31m C5.2 Payments API (HTTP)[2m > [22mPOST /payments tanpa Idempotency-Key -> 400[33m 1873[2mms[22m[31m[39m
+[31m     → expected 401 to be 400 // Object.is equality[39m
+[31m   [31m×[31m C5.2 Payments API (HTTP)[2m > [22mPOST /payments dengan Idempotency-Key -> 201[33m 739[2mms[22m[31m[39m
+[31m     → expected 401 to be 201 // Object.is equality[39m
+[31m   [31m×[31m C5.2 Payments API (HTTP)[2m > [22mPOST /payments payload beda key sama -> 409[33m 460[2mms[22m[31m[39m
+[31m     → expected 401 to be 409 // Object.is equality[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 3 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m test/payments-api.test.ts[2m > [22mC5.2 Payments API (HTTP)[2m > [22mPOST /payments tanpa Idempotency-Key -> 400
+[31m[1mAssertionError[22m: expected 401 to be 400 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 400[39m
+[31m+ 401[39m
+
+[36m [2m❯[22m test/payments-api.test.ts:[2m50:28[22m[39m
+    [90m 48| [39m      }[33m,[39m
+    [90m 49| [39m    })[33m;[39m
+    [90m 50| [39m    [34mexpect[39m(res[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m400[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m 51| [39m  })[33m;[39m
+    [90m 52| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m test/payments-api.test.ts[2m > [22mC5.2 Payments API (HTTP)[2m > [22mPOST /payments dengan Idempotency-Key -> 201
+[31m[1mAssertionError[22m: expected 401 to be 201 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 201[39m
+[31m+ 401[39m
+
+[36m [2m❯[22m test/payments-api.test.ts:[2m84:28[22m[39m
+    [90m 82| [39m      console[33m.[39m[34merror[39m([32m"Unexpected:"[39m[33m,[39m res[33m.[39mstatusCode[33m,[39m res[33m.[39mpayload)[33m;[39m
+    [90m 83| [39m    }
+    [90m 84| [39m    [34mexpect[39m(res[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m201[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m 85| [39m    [35mconst[39m body [33m=[39m [33mJSON[39m[33m.[39m[34mparse[39m(res[33m.[39mpayload)[33m;[39m
+    [90m 86| [39m    [34mexpect[39m(body[33m.[39mbalance)[33m.[39m[34mtoBe[39m([32m"0"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m test/payments-api.test.ts[2m > [22mC5.2 Payments API (HTTP)[2m > [22mPOST /payments payload beda key sama -> 409
+[31m[1mAssertionError[22m: expected 401 to be 409 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 409[39m
+[31m+ 401[39m
+
+[36m [2m❯[22m test/payments-api.test.ts:[2m121:28[22m[39m
+    [90m119| [39m      console[33m.[39m[34merror[39m([32m"Unexpected:"[39m[33m,[39m res[33m.[39mstatusCode[33m,[39m res[33m.[39mpayload)[33m;[39m
+    [90m120| [39m    }
+    [90m121| [39m    [34mexpect[39m(res[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m409[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m122| [39m  })[33m;[39m
+    [90m123| [39m}[33m,[39m [34m180_000[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m   Start at [22m 07:15:12
+[2m   Duration [22m 28.02s[2m (transform 339ms, setup 0ms, collect 3.78s, tests 23.09s, environment 0ms, prepare 324ms)[22m
+
