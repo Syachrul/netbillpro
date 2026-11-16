@@ -1,0 +1,53 @@
+diff --git a/docs/specs/SPEC-PKG-SUB-001_v1.0.md b/docs/specs/SPEC-PKG-SUB-001_v1.0.md
+index d3cbddb..6c089a7 100644
+--- a/docs/specs/SPEC-PKG-SUB-001_v1.0.md
++++ b/docs/specs/SPEC-PKG-SUB-001_v1.0.md
+@@ -3,7 +3,7 @@
+ **Zona risiko:** 🟡 Kuning | **Prioritas:** P0 | **Modul:** packages, subscriptions
+ **Fase:** C5.0 (documentary) → C5.1 (billing)
+ **Sumber:** PRD v1.2 §5.2, TDD v1.1 §7.2, decisions.log (Q-1, Q-2, Q-3, OQ-3)
+-**Status:** DRAFT untuk review Owner
++**Status:** v1.1 (reconciled 2026-11-16) — DRAFT; Section 10/11/13 markers applied per governance cleanup
+ 
+ ---
+ 
+@@ -116,7 +116,9 @@ Statement sample: Mei 2026 (31 hari) aktivasi 20 Mei, price 110k → seharusnya
+ - Ledger tidak tahu packages/subscriptions. Ia hanya menerima total, dueDate, number, period.
+ - Snapshot dibangun oleh Billing sebelum memanggil Ledger.
+ 
+-## 10. Dampak Skema (PROPOSAL — BELUM DIIMPLEMENTASIKAN)
++<!-- RECONCILED 2026-11-16: Content below is IMPLEMENTED per apps/api/prisma/schema.prisma (usernameHotspot line 66, Subscription model line 102, Invoice.subscriptionId line 122). Retained as historical design record. Do not treat 'BELUM DIIMPLEMENTASIKAN' as current state. -->
++
++## 10. Dampak Skema (PROPOSAL — historical record; see reconciliation marker above)
+ 
+ ```sql
+ -- (Proposal, bukan migrasi aktif)
+@@ -127,7 +129,9 @@ ALTER TABLE invoices ADD COLUMN subscription_id UUID NULL REFERENCES subscriptio
+ CREATE UNIQUE INDEX uq_active_subscription ON subscriptions(customer_id) WHERE end_date IS NULL;
+ ```
+ 
+-## 11. Open Questions untuk Owner
++<!-- RESOLVED 2026-11-16: All OQ-A..OQ-E below have canonical answers in Section 13 (Owner Decisions, 15 Nov 2026). Retained as historical question record. -->
++
++## 11. Open Questions untuk Owner (historical — resolved in Section 13)
+ 
+ | # | Pertanyaan | Rekomendasi |
+ | :--- | :--- | :--- |
+@@ -166,6 +170,8 @@ CREATE UNIQUE INDEX uq_active_subscription ON subscriptions(customer_id) WHERE e
+ 
+ ---
+ 
++<!-- DUPLICATE 2026-11-16: byte-identical to first Section 13 block above. Refer to canonical. -->
++
+ ## 13. Owner Decisions (15 November 2026)
+ 
+ | # | Keputusan |
+@@ -178,6 +184,8 @@ CREATE UNIQUE INDEX uq_active_subscription ON subscriptions(customer_id) WHERE e
+ 
+ **Status:** Disetujui. Siap untuk implementasi schema (C5.0-impl).
+ 
++<!-- ABBREV-DUP 2026-11-16: abbreviated variant (OQ-C omits 'Override per-customer = Fase 2'; OQ-D omits '(perlu data historis)'; OQ-E omits '(reset tiap bulan)'). Refer to canonical first Section 13. -->
++
+ ## 13. Owner Decisions (15 November 2026)
+ | # | Keputusan |
+ | :--- | :--- |

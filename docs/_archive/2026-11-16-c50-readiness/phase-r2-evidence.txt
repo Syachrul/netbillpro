@@ -1,0 +1,95 @@
+--- HEAD: 27b1268 ---
+--- captured: 2026-11-16T03:34:55Z ---
+
+=== TEMPLATE.md sections ===
+1:# FR-XXX-NN: <Nama Fitur>
+6:## 1. Tujuan (1-2 kalimat)
+8:## 2. Peran & otorisasi
+11:## 3. Aturan bisnis (bernomor, dapat diuji)
+15:## 4. Kontrak API
+18:## 5. Data
+21:## 6. Event
+24:## 7. Alur & kasus tepi
+27:## 8. Contoh berangka (KUNCI JAWABAN)
+31:## 9. Acceptance criteria (Given/When/Then)
+34:## 10. Tes yang wajib ada
+37:## 11. UI (jika ada)
+40:## 12. Di luar lingkup (eksplisit)
+42:## 13. Pertanyaan terbuka
+
+=== SPEC-PKG-SUB-001 sections ===
+1:# SPEC-PKG-SUB-001: Packages & Subscriptions Design
+10:## 1. Tujuan
+14:## 2. Entity: packages
+30:### Aturan Bisnis Packages
+36:## 3. Entity: subscriptions
+48:### Aturan Bisnis Subscriptions
+54:## 4. Field Tambahan: customers.username_hotspot
+60:### Aturan Bisnis username_hotspot
+66:## 5. Relasi Customer–Subscription–Invoice
+72:### Field Tambahan di invoices
+77:### Snapshot Invoice wajib memuat:
+83:## 6. Prorata Rules (OQ-3 REVISED)
+85:### 6.1 Kapan Prorata
+89:### 6.2 Formula
+94:### 6.3 Parameter
+100:### 6.4 Catatan Discrepancy Sample
+103:## 7. Arrears Handling
+108:## 8. Grace Period (Q-3)
+114:## 9. Hubungan dengan Ledger (C3)
+119:## 10. Dampak Skema (PROPOSAL — BELUM DIIMPLEMENTASIKAN)
+130:## 11. Open Questions untuk Owner
+140:## 12. Acceptance Criteria (untuk implementasi nanti)
+155:## 13. Owner Decisions (15 November 2026)
+169:## 13. Owner Decisions (15 November 2026)
+181:## 13. Owner Decisions (15 November 2026)
+
+=== SPEC-LEDGER-001 sections ===
+1:# SPEC-LEDGER-001: Ledger, Alokasi Pembayaran, Penerbitan Tagihan & Void
+18:## 0. Koreksi terhadap Dokumen Sebelumnya (Erratum)
+34:## 1. Tujuan
+38:## 2. Peran & Otorisasi
+53:## 3. Aturan Bisnis (Dapat Diuji)
+55:### 3.1 Ledger
+63:### 3.2 Tagihan (Invoice)
+70:### 3.3 Status Tagihan (Diturunkan, Bukan Diisi Manual)
+82:### 3.4 Alokasi
+91:### 3.5 Pembayaran
+99:### 3.6 Void (Pembatalan)
+107:### 3.7 Saldo Awal (Impor)
+113:### 3.8 Refund Deposit (P1, FR-CUS-08)
+118:## 4. Kontrak Layanan Internal (Modul `ledger`)
+135:### 4.1 Algoritma (Kanonik)
+223:## 5. Data
+225:### 5.1 Perubahan Skema terhadap TDD §7.2
+238:### 5.2 Constraint & Index Wajib (Pagar Terakhir)
+245:### 5.3 Query Sumber Dana Bebas (menggantikan TDD §8.2)
+261:## 6. Invarian (Diuji Setelah **Setiap** Operasi pada Uji Properti, dan Harian di Produksi)
+304:## 7. Kontrak API Terkait
+306:### 7.1 `POST /api/v1/payments`
+342:### 7.2 Void
+347:## 8. Kunci Jawaban: Vektor Uji Berangka
+623:### 8.1 Tes Negatif Wajib
+643:## 9. Acceptance Criteria (Given/When/Then)
+658:## 10. Tes yang Wajib Ada
+671:## 11. Event yang Diterbitkan
+675:## 12. Di Luar Lingkup (Eksplisit)
+683:## 13. Keputusan yang Dibutuhkan (Beri Default agar AI Tidak Menebak)
+697:## 14. Instruksi untuk Agen AI (Ringkas)
+
+=== ADR-Register tail (next #) ===
+| [ADR-19](adr/ADR-0019.md) | Model referensi ledger (oracle) sebagai pagar logika | **Diterima** | Hasil verifikasi: 18/18 vektor lulus, uji properti, 2 mutasi tertangkap | Tersedia di paket review (`ledger/reference-model`); perlu disalin ke repo |
+| [ADR-20](adr/ADR-0020.md) | Documentation-First sebagai gerbang sebelum implementasi zona merah | **Diterima** | STATE (fase Documentation-First, HOLD C2-3/C3) | Ya |
+| [ADR-21](adr/ADR-0021.md) | Package manager: pnpm (T1) | **Diterima** | Addendum PRD (T1) | Ya |
+| [ADR-22](adr/ADR-0022.md) | ORM: Prisma untuk CRUD + SQL mentah untuk ledger (T2) | **Diterima** | Addendum PRD (T2); Tahap C0-C1 | Sebagian: skema ada; ledger raw SQL belum (C3) |
+
+## Gerbang persetujuan sebelum C3 (LedgerService)
+ADR yang **harus berstatus Diterima** sebelum C3 dibuka: **ADR-03, ADR-04, ADR-09, ADR-14, ADR-19, ADR-22**. Saat ini **ADR-04 dan ADR-14 masih Diusulkan**: setujui (atau ubah) keduanya lebih dulu.
+ADR yang harus Diterima sebelum sprint notifikasi (S5): ADR-05, ADR-08, ADR-13, ADR-16.
+
+## Catatan rekonsiliasi
+1. Register v1.0 berstatus DRAFT padahal ADR-01, 02, 03, 07, 12 sudah menjadi dasar kode Tahap B/C. Statusnya kini disesuaikan dengan kenyataan. **Kolom Implementasi diturunkan dari STATE.md dan perlu diverifikasi Eng Lead.**
+2. ADR-06 dan ADR-10 tidak lagi "Menunggu OQ": OQ-5 dan OQ-1 sudah FINAL (Addendum PRD).
+3. Ditambahkan ADR-19 s.d. ADR-22: model referensi ledger, Documentation-First, pnpm (T1), Prisma + SQL mentah (T2). Keputusan T1/T2 sebelumnya hanya ada di Addendum PRD, belum tercatat sebagai ADR.
+4. ADR-08 diperjelas dari "pdfmake atau react-pdf" (TDD) menjadi pdfmake dengan alternatif terdokumentasi.
+5. ADR-10: skala diselaraskan dengan PRD §1.5 (2.000 saat go-live, desain hingga 5.000).

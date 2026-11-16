@@ -1,0 +1,42 @@
+--- HEAD: 27b1268 ---
+--- captured: 2026-11-16T03:37:48Z ---
+
+=== SPEC-PKG-SUB-001 Section 13 duplicates ===
+155:## 13. Owner Decisions (15 November 2026)
+169:## 13. Owner Decisions (15 November 2026)
+181:## 13. Owner Decisions (15 November 2026)
+
+=== SPEC-PKG-SUB-001 Section 10 statement ===
+119:## 10. Dampak Skema (PROPOSAL — BELUM DIIMPLEMENTASIKAN)
+120-
+121-```sql
+122--- (Proposal, bukan migrasi aktif)
+
+=== DLR-02 correction in decisions.log ===
+61:# [CORRECTION 2026-11-15] VOID — UNAUTHORIZED ENTRY (DLR-02)
+62-# Reference: preceding block (OWNER DECISION - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION)
+63-# Status: INVALID — NO GOVERNANCE EFFECT
+64-# Reason: No Owner decision opened C3 Implementation. C3 v4.4 not submitted/reviewed.
+65-#   ADR-04/ADR-14 ratification not granted in available review chain.
+66-# Authoritative: C3 Implementation = NOT AUTHORIZED; ADR-04 & ADR-14 = Diusulkan.
+67-# Instruction: Do not execute original block. Preserve as audit trail.
+68-# Issued by: Owner (OWNER REVIEW DECISION-LOG-RECON-01, 2026-11-15).
+69-# ============================================================
+70-
+71-[2026-11-15] OWNER DECISION - BILLING STATEMENT REVIEW [DEC-2026-11-15-BILLING-001]
+--
+151:# - FINAL ARCHITECTURE GATE & C3 AUTHORIZATION (line 52) = D-NB-002 [VOID per DLR-02]
+152-# - BILLING STATEMENT REVIEW (line 58) = DEC-2026-11-15-BILLING-001 [canonical]
+153-# - BILLING STATEMENT REVIEW (line 72) = DEC-2026-11-15-BILLING-001-DUP [duplicate]
+154-# - C5.0 OPEN QUESTIONS (line 86) = DEC-2026-11-15-C5-001 [canonical; schema claim VOID per DLR-06]
+155-# - C5.0 OPEN QUESTIONS (line 96) = DEC-2026-11-15-C5-001-DUP [duplicate]
+156-# - C5.0 OPEN QUESTIONS (line 106) = DEC-2026-11-15-C5-001-DIV [abbreviated duplicate]
+157-#
+158-# Tool: node tools/check-decisions-log.mjs docs/decisions.log
+159-# ============================================================
+160-
+161-[2026-11-15] OWNER DECISION - BILLING C5 ROADMAP ENRICHMENT [DEC-2026-11-15-BILLINGC5-001]
+
+=== STATE.md C3 status ===
+6:**C3 & C4 COMPLETED.** LedgerService lulus 18 vektor dan 50 urutan properti acak.
+11:- **C3:** LedgerService (postPayment, issueInvoice, voidPayment, voidInvoice, refundDeposit, importOpeningBalance).

@@ -1,0 +1,50 @@
+--- HEAD: 27b1268 ---
+--- captured: 2026-11-16T03:32:35Z ---
+
+=== docs/ md files ===
+docs/adr/ADR-0001.md
+docs/adr/ADR-0002.md
+docs/adr/ADR-0003.md
+docs/adr/ADR-0004.md
+docs/adr/ADR-0005.md
+docs/adr/ADR-0006.md
+docs/adr/ADR-0007.md
+docs/adr/ADR-0008.md
+docs/adr/ADR-0009.md
+docs/adr/ADR-0010.md
+docs/adr/ADR-0011.md
+docs/adr/ADR-0012.md
+docs/adr/ADR-0013.md
+docs/adr/ADR-0014.md
+docs/adr/ADR-0015.md
+docs/adr/ADR-0016.md
+docs/adr/ADR-0017.md
+docs/adr/ADR-0018.md
+docs/adr/ADR-0019.md
+docs/adr/ADR-0020.md
+docs/adr/ADR-0021.md
+docs/adr/ADR-0022.md
+docs/adr/ADR-Register.md
+docs/artifact-register.md
+docs/DEV-RTRW-2026-001_AI-Playbook-Amendment-Notes.md
+docs/DEV-RTRW-2026-001_v1.0_Playbook.md
+docs/do-not-do.md
+docs/glossary.md
+docs/governance-alignment.md
+docs/prd/PRD-RTRW-2026-001.md
+docs/proposals/DEV-RTRW-2026-001 v1.0.md
+docs/reviews/REVIEW-REPORT-1.md
+docs/reviews/REVIEW-REPORT-2.md
+docs/specs/SPEC-LEDGER-001_v1_1.md
+docs/specs/SPEC-PKG-SUB-001_v1.0.md
+docs/specs/TEMPLATE.md
+docs/STATE.md
+docs/tdd/TDD-Amendment-Notes.md
+docs/tdd/TDD-RTRW-2026-001_v1.1.md
+docs/test-plan/ledger-scenarios.md
+docs/traceability-matrix.md
+
+=== C5.0 refs ===
+docs/specs/SPEC-PKG-SUB-001_v1.0.md
+
+=== Billing refs ===
