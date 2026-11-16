@@ -352,4 +352,110 @@ export class LedgerService {
     }
     return newAllocations;
   }
+
+  async getLedger(
+    customerId: string,
+    range?: { from?: Date; to?: Date; limit?: number }
+  ): Promise<{
+    entries: Array<{
+      seq: bigint;
+      type: string;
+      debit: bigint;
+      kredit: bigint;
+      balanceAfter: bigint;
+      refType: string | null;
+      refId: string | null;
+      createdAt: Date;
+    }>;
+    total: number;
+  }> {
+    const where: any = { customerId };
+    if (range?.from || range?.to) {
+      where.createdAt = {};
+      if (range.from) where.createdAt.gte = range.from;
+      if (range.to) where.createdAt.lte = range.to;
+    }
+    const entries = await this.prisma.ledgerEntry.findMany({
+      where,
+      orderBy: { seq: "desc" },
+      take: range?.limit ?? 100,
+    });
+    const total = await this.prisma.ledgerEntry.count({ where });
+    return {
+      entries: entries.map((e) => ({
+        seq: e.seq,
+        type: String(e.type),
+        debit: e.debit,
+        kredit: e.kredit,
+        balanceAfter: e.balanceAfter,
+        refType: e.refType,
+        refId: e.refId,
+        createdAt: e.createdAt,
+      })),
+      total,
+    };
+  }
+
+  async getPosition(customerId: string): Promise<{
+    balance: bigint;
+    totalDue: bigint;
+    freeCredit: bigint;
+  }> {
+    return this.prisma.$transaction(async (tx) => {
+      const sums = await tx.ledgerEntry.aggregate({
+        where: { customerId },
+        _sum: { kredit: true, debit: true },
+      });
+      const balance = (sums._sum.kredit ?? 0n) - (sums._sum.debit ?? 0n);
+      const totalDue = balance < 0n ? -balance : 0n;
+      const sources = await this.getFreeCreditSources(tx, customerId);
+      let freeCredit = 0n;
+      for (const s of sources) freeCredit += BigInt(s.free);
+      return { balance, totalDue, freeCredit };
+    }, TX_OPTIONS);
+  }
+
+  async checkInvariants(customerId?: string): Promise<{
+    ok: boolean;
+    violations: Array<{ customerId: string; invariant: string; detail: string }>;
+  }> {
+    const violations: Array<{ customerId: string; invariant: string; detail: string }> = [];
+    const customerIds: string[] = customerId
+      ? [customerId]
+      : (await this.prisma.customer.findMany({ select: { id: true } })).map((c) => c.id);
+
+    for (const cid of customerIds) {
+      const entries = await this.prisma.ledgerEntry.findMany({
+        where: { customerId: cid },
+        orderBy: { seq: "asc" },
+      });
+      let running = 0n;
+      for (const e of entries) {
+        running = running + e.kredit - e.debit;
+        if (running !== e.balanceAfter) {
+          violations.push({
+            customerId: cid,
+            invariant: "I-1",
+            detail: `seq=${e.seq}: expected balanceAfter=${running}, got ${e.balanceAfter}`,
+          });
+          break;
+        }
+      }
+      const invoices = await this.prisma.invoice.findMany({
+        where: { customerId: cid },
+        select: { id: true, number: true, total: true, allocated: true },
+      });
+      for (const inv of invoices) {
+        if (inv.allocated > inv.total) {
+          violations.push({
+            customerId: cid,
+            invariant: "I-2",
+            detail: `invoice ${inv.number}: allocated (${inv.allocated}) > total (${inv.total})`,
+          });
+        }
+      }
+    }
+    return { ok: violations.length === 0, violations };
+  }
+
 }

@@ -1,0 +1,43 @@
+--- HEAD: a6b6b95 ---
+--- captured: 2026-11-16T03:52:52Z ---
+
+=== ADR-04 status ===
+| Status | **Diusulkan** |
+| Dasar | Menunggu persetujuan **sebelum C3** (gerbang) |
+| Implementasi | Belum (C3) |
+| Tanggal usulan | 2026-11-13 (ditinjau 2026-11-15) |
+Status per tagihan tidak dapat diturunkan dari saldo total.
+
+=== ADR-14 status ===
+| Status | **Diusulkan** |
+| Dasar | Menunggu persetujuan sebelum C3 |
+| Implementasi | Belum |
+| Tanggal usulan | 2026-11-13 (ditinjau 2026-11-15) |
+
+=== ADR-08 status ===
+| Status | **Diusulkan** |
+| Dasar | Menunggu persetujuan sebelum S5. Diperjelas dari TDD (pdfmake atau react-pdf) menjadi pdfmake |
+| Implementasi | Belum |
+| Tanggal usulan | 2026-11-13 (ditinjau 2026-11-15) |
+
+=== ADR-13 status ===
+| Status | **Diusulkan** |
+| Dasar | Menunggu persetujuan sebelum S5/S7 |
+| Implementasi | Belum |
+| Tanggal usulan | 2026-11-13 (ditinjau 2026-11-15) |
+
+=== LedgerService public methods ===
+46:  async postPayment(input: PostPaymentInput): Promise<{ balance: Rupiah; allocations: any[]; paymentId: string }> {
+109:  async issueInvoice(input: IssueInvoiceInput): Promise<{ id: string }> {
+143:  async voidPayment(paymentId: string, reason: string): Promise<void> {
+185:  async voidInvoice(invoiceId: string, reason: string): Promise<void> {
+214:  async refundDeposit(input: RefundInput): Promise<void> {
+243:  async importOpeningBalance(input: OpeningBalanceInput): Promise<void> {
+291:  private async lockCustomer(tx: any, customerId: string) {
+295:  private async getLastBalance(tx: any, customerId: string): Promise<Rupiah> {
+300:  private async getCurrentBalance(tx: any, customerId: string): Promise<Rupiah> {
+305:  private async getFreeCreditSources(tx: any, customerId: string): Promise<any[]> {
+319:  private async reallocate(tx: any, customerId: string): Promise<any[]> {
+
+=== Ledger test count ===
+total ledger tests: 9

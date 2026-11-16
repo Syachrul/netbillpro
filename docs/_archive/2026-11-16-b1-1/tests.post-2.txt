@@ -1,0 +1,20 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+ [32m✓[39m test/ledger-negative.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 33325[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-7: Duplicate active monthly invoice harus ditolak (P2002) [33m1441[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-9: Append-only protection (UPDATE & DELETE ditolak di kedua tabel) [33m1367[2mms[22m[39m
+ [32m✓[39m test/ledger-implementation.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 35226[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mS8: Refund deposit [33m1744[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT15: Impor saldo awal (tunggakan & deposit) [33m952[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT21: Void payment setelah refund ditolak [33m892[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT22: Void invoice lunas, dana jadi deposit [33m706[2mms[22m[39m
+ [32m✓[39m test/ledger-property.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 46927[2mms[22m[39m
+   [33m[2m✓[22m[39m C4 Property Testing[2m > [22mUrutan operasi acak tidak boleh melanggar Invarian [33m12691[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 11:47:16
+[2m   Duration [22m 50.19s[2m (transform 370ms, setup 0ms, collect 6.33s, tests 115.48s, environment 1ms, prepare 1.26s)[22m
+

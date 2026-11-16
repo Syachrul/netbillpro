@@ -1,0 +1,44 @@
+--- HEAD: a6b6b95 ---
+--- captured: 2026-11-16T03:58:09Z ---
+
+=== Models list ===
+60:model Customer {
+84:model Package {
+102:model Subscription {
+118:model Invoice {
+143:model InvoiceItem {
+157:model Payment {
+177:model LedgerEntry {
+201:model LedgerReversal {
+213:model PaymentAllocation {
+240:model User {
+
+=== Invoice model ===
+model Invoice {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number         String        @unique
+  customerId     String        @map("customer_id") @db.Uuid
+  subscriptionId String?       @map("subscription_id") @db.Uuid
+  type           InvoiceType   @default(BULANAN)
+  period         String?       @db.Char(7)
+  issuedAt       DateTime      @default(now()) @map("issued_at") @db.Timestamptz(6)
+  dueDate        DateTime      @map("due_date") @db.Date
+  total          BigInt
+  allocated      BigInt        @default(0)
+  status         InvoiceStatus @default(BELUM_LUNAS)
+  snapshot       Json
+  voidedAt       DateTime?     @map("voided_at") @db.Timestamptz(6)
+  voidReason     String?       @map("void_reason")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  customer    Customer            @relation(fields: [customerId], references: [id])
+  items       InvoiceItem[]
+  allocations PaymentAllocation[]
+
+  @@index([customerId, dueDate], map: "ix_invoices_customer_due")
+  @@map("invoices")
+}
+
+=== Counter/outbox/items/actor/reversal tables check ===
+143:model InvoiceItem {
+201:model LedgerReversal {

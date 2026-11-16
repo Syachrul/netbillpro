@@ -1,0 +1,16 @@
+--- HEAD: a6b6b95 ---
+--- captured: 2026-11-16T03:54:26Z ---
+
+=== Test counts ===
+apps/api/test/ledger-implementation.test.ts: it=6 expect=7
+apps/api/test/ledger-negative.test.ts: it=2 expect=11
+apps/api/test/ledger-property.test.ts: it=1 expect=2
+
+=== SPEC-LEDGER T-vector count ===
+T10
+T11
+T13
+T15
+T21
+T22
+T9
