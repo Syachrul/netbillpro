@@ -22,10 +22,17 @@ export interface IssueInvoiceInput {
   type?: "BULANAN" | "MANUAL" | "SALDO_AWAL";
   snapshot?: Record<string, unknown>;
   subscriptionId?: string;
+  items?: InvoiceItemInput[];
 }
 
 export interface RefundInput {
   customerId: string;
+  amount: Rupiah;
+}
+
+export interface InvoiceItemInput {
+  kind: string;
+  description: string;
   amount: Rupiah;
 }
 
@@ -135,6 +142,18 @@ export class LedgerService {
           refId: inv.id,
         },
       });
+      if (input.items && input.items.length > 0) {
+        for (const item of input.items) {
+          await tx.invoiceItem.create({
+            data: {
+              invoiceId: inv.id,
+              kind: item.kind,
+              description: item.description,
+              amount: item.amount,
+            },
+          });
+        }
+      }
       await this.reallocate(tx, input.customerId);
       return { id: inv.id };
     }, TX_OPTIONS);

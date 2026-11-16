@@ -1,0 +1,56 @@
+
+> @netbill/api@0.0.0 typecheck F:\Project\NEW RTRWNET\apps\api
+> tsc --noEmit
+
+src/modules/billing/billing.service.ts(91,43): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(year: number, monthIndex?: number | undefined, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined): number', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+  Overload 2 of 2, '(year: number, monthIndex: number, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined): number', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/modules/billing/billing.service.ts(91,49): error TS18048: 'month' is possibly 'undefined'.
+src/modules/billing/billing.service.ts(92,41): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(year: number, monthIndex?: number | undefined, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined): number', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+  Overload 2 of 2, '(year: number, monthIndex: number, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined): number', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/modules/billing/billing.service.ts(107,41): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(year: number, monthIndex?: number | undefined, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined): number', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+  Overload 2 of 2, '(year: number, monthIndex: number, date?: number | undefined, hours?: number | undefined, minutes?: number | undefined, seconds?: number | undefined, ms?: number | undefined): number', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/modules/ledger/ledger.service.ts(3,32): error TS6059: File 'F:/Project/NEW RTRWNET/packages/shared/src/index.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/ledger/ledger.service.ts'
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/payments/payments.controller.ts'
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/packages/packages.service.ts'
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/billing/billing.service.ts'
+src/modules/ledger/ledger.service.ts(3,32): error TS6307: File 'F:/Project/NEW RTRWNET/packages/shared/src/index.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/ledger/ledger.service.ts'
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/payments/payments.controller.ts'
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/packages/packages.service.ts'
+    Imported via "@netbill/shared" from file 'F:/Project/NEW RTRWNET/apps/api/src/modules/billing/billing.service.ts'
+src/modules/ledger/ledger.service.ts(131,11): error TS2322: Type 'Record<string, unknown>' is not assignable to type 'JsonNull | InputJsonValue'.
+  Type 'Record<string, unknown>' is missing the following properties from type 'readonly (InputJsonValue | null)[]': length, concat, join, slice, and 20 more.
+src/modules/ledger/ledger.service.ts(321,5): error TS2322: Type 'number' is not assignable to type 'bigint'.
+src/modules/ledger/ledger.service.ts(325,12): error TS2347: Untyped function calls may not accept type arguments.
+src/modules/ledger/ledger.service.ts(355,27): error TS18048: 'available' is possibly 'undefined'.
+src/modules/ledger/ledger.service.ts(356,11): error TS18048: 'allocAmount' is possibly 'undefined'.
+src/modules/ledger/ledger.service.ts(366,9): error TS2532: Object is possibly 'undefined'.
+src/modules/ledger/ledger.service.ts(366,9): error TS2365: Operator '-=' cannot be applied to types 'bigint' and 'number | bigint'.
+src/modules/ledger/ledger.service.ts(366,26): error TS18048: 'allocAmount' is possibly 'undefined'.
+../../packages/shared/src/index.ts(1,15): error TS6059: File 'F:/Project/NEW RTRWNET/packages/shared/src/money.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+../../packages/shared/src/index.ts(1,15): error TS6307: File 'F:/Project/NEW RTRWNET/packages/shared/src/money.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../../packages/shared/src/index.ts(2,15): error TS6059: File 'F:/Project/NEW RTRWNET/packages/shared/src/clock.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+../../packages/shared/src/index.ts(2,15): error TS6307: File 'F:/Project/NEW RTRWNET/packages/shared/src/clock.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../../packages/shared/src/index.ts(3,15): error TS6059: File 'F:/Project/NEW RTRWNET/packages/shared/src/result.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+../../packages/shared/src/index.ts(3,15): error TS6307: File 'F:/Project/NEW RTRWNET/packages/shared/src/result.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../../packages/shared/src/index.ts(4,15): error TS6059: File 'F:/Project/NEW RTRWNET/packages/shared/src/errors.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+../../packages/shared/src/index.ts(4,15): error TS6307: File 'F:/Project/NEW RTRWNET/packages/shared/src/errors.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+ ELIFECYCLE  Command failed with exit code 2.

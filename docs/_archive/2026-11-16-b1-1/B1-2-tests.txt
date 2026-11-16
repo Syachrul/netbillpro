@@ -1,0 +1,33 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+ [32m✓[39m test/ledger-implementation.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 46201[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mS8: Refund deposit [33m3134[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT15: Impor saldo awal (tunggakan & deposit) [33m2465[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT21: Void payment setelah refund ditolak [33m1927[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT22: Void invoice lunas, dana jadi deposit [33m1590[2mms[22m[39m
+ [32m✓[39m test/ledger-read-api.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 53578[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetLedger[2m > [22mempty customer -> entries [], total 0 [33m1262[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetLedger[2m > [22mafter invoice+payment -> sorted desc by seq [33m1756[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetLedger[2m > [22mlimit applied (3 entries, limit 2) [33m1412[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetPosition[2m > [22mempty -> all zero [33m878[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetPosition[2m > [22minvoice only -> negative balance, positive totalDue [33m792[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetPosition[2m > [22mpayment > invoice -> free credit [33m989[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mcheckInvariants[2m > [22mempty state -> ok, no violations [33m615[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mcheckInvariants[2m > [22mclean flow -> ok [33m903[2mms[22m[39m
+ [32m✓[39m test/ledger-negative.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 37654[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-7: Duplicate active monthly invoice harus ditolak (P2002) [33m1320[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-9: Append-only protection (UPDATE & DELETE ditolak di kedua tabel) [33m997[2mms[22m[39m
+ [32m✓[39m test/ledger-property.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 94508[2mms[22m[39m
+   [33m[2m✓[22m[39m C4 Property Testing[2m > [22mUrutan operasi acak tidak boleh melanggar Invarian [33m51868[2mms[22m[39m
+ [32m✓[39m test/ledger-items.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 37657[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-2: InvoiceItem support[2m > [22mno items -> 0 InvoiceItem rows (backward compat) [33m1041[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-2: InvoiceItem support[2m > [22m3 items -> 3 InvoiceItem rows with correct fields [33m394[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-2: InvoiceItem support[2m > [22msingle item -> 1 InvoiceItem row [33m571[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 11:54:28
+[2m   Duration [22m 100.35s[2m (transform 486ms, setup 0ms, collect 15.12s, tests 269.60s, environment 5ms, prepare 2.67s)[22m
+

@@ -1,0 +1,44 @@
+diff --git a/apps/api/src/modules/ledger/ledger.service.ts b/apps/api/src/modules/ledger/ledger.service.ts
+index 707a45a..7203ae2 100644
+--- a/apps/api/src/modules/ledger/ledger.service.ts
++++ b/apps/api/src/modules/ledger/ledger.service.ts
+@@ -22,6 +22,7 @@ export interface IssueInvoiceInput {
+   type?: "BULANAN" | "MANUAL" | "SALDO_AWAL";
+   snapshot?: Record<string, unknown>;
+   subscriptionId?: string;
++  items?: InvoiceItemInput[];
+ }
+ 
+ export interface RefundInput {
+@@ -29,6 +30,12 @@ export interface RefundInput {
+   amount: Rupiah;
+ }
+ 
++export interface InvoiceItemInput {
++  kind: string;
++  description: string;
++  amount: Rupiah;
++}
++
+ export interface OpeningBalanceInput {
+   customerId: string;
+   amount: Rupiah;
+@@ -135,6 +142,18 @@ export class LedgerService {
+           refId: inv.id,
+         },
+       });
++      if (input.items && input.items.length > 0) {
++        for (const item of input.items) {
++          await tx.invoiceItem.create({
++            data: {
++              invoiceId: inv.id,
++              kind: item.kind,
++              description: item.description,
++              amount: item.amount,
++            },
++          });
++        }
++      }
+       await this.reallocate(tx, input.customerId);
+       return { id: inv.id };
+     }, TX_OPTIONS);
