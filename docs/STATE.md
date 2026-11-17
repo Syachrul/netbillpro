@@ -57,7 +57,7 @@
 | F-5 | CI test parallelism uncontrolled | DEFERRED | F-1 |
 | F-6 | OpenAPI drift 1/7 endpoints (14%) | ACCEPTED | P1 scope |
 | F-7 | No unit/integration split | ACCEPTED | Phase C scope |
-| F-8 | n1-verification.txt orphan | ACCEPTED | Cleanup auth |
+| F-8 | n1-verification.txt orphan | **CORRECTED** | Committed with full-test-suite.log evidence (commit below) |
 | F-9 | Ratification count discrepancy | **CORRECTED** | B-3 addendum (`f56ec61`) |
 
 ## 4. Pending authorization
@@ -107,11 +107,16 @@
 
 **Total:** 23 commits on `origin/main`, synced.
 
-**Untracked (local only, not committed):**
-- `Struktur Tree.md` (Owner upload)
-- `docs/DOC-GAP-ANALYSIS_2026-11-16.md` (origin unclear)
+**Untracked (local only, not committed):** NONE (cleanup performed 2026-11-17)
+
+**Recently committed from prior untracked:**
+- `docs/DOC-GAP-ANALYSIS_2026-11-16.md` (committed — referenced by this STATE)
+- `docs/_archive/2026-11-16-verify/` (committed — N-1 evidence, corrects
+  Phase A "N-1 never ran" claim)
+
+**Deleted (redundant/no archival value):**
+- `Struktur Tree.md` (context upload, consumed)
 - `docs/_archive/2026-11-16-ratify/push-complete-v2.txt` (redundant)
-- `docs/_archive/2026-11-16-verify/` (N-1 orphan dir)
 
 ## 7. LedgerService status (C3)
 
