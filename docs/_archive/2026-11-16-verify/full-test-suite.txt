@@ -1,0 +1,91 @@
+
+> @netbill/api@0.0.0 test F:\Project\NEW RTRWNET\apps\api
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Project/NEW RTRWNET/apps/api[39m
+
+ [32m✓[39m test/payments-api.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 76186[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments tanpa Idempotency-Key -> 400 [33m8288[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments dengan Idempotency-Key -> 201 [33m3041[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments payload beda key sama -> 409 [33m2621[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.2 Payments API (HTTP)[2m > [22mPOST /payments ignores client recordedBy — uses token subject [33m2012[2mms[22m[39m
+ [32m✓[39m test/ledger-read-api.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 78951[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetLedger[2m > [22mempty customer -> entries [], total 0 [33m5874[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetLedger[2m > [22mafter invoice+payment -> sorted desc by seq [33m4727[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetLedger[2m > [22mlimit applied (3 entries, limit 2) [33m1875[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetPosition[2m > [22mempty -> all zero [33m1450[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetPosition[2m > [22minvoice only -> negative balance, positive totalDue [33m1691[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mgetPosition[2m > [22mpayment > invoice -> free credit [33m1480[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mcheckInvariants[2m > [22mempty state -> ok, no violations [33m1568[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-1: LedgerService read APIs[2m > [22mcheckInvariants[2m > [22mclean flow -> ok [33m1510[2mms[22m[39m
+ [32m✓[39m test/customers-api.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 79102[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.6 Customers API (HTTP)[2m > [22mPOST /customers sebagai ADMIN -> 201 [33m8579[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.6 Customers API (HTTP)[2m > [22mPOST /customers sebagai KOLEKTOR -> 403 [33m3037[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.6 Customers API (HTTP)[2m > [22mGET /customers sebagai KOLEKTOR -> 200 (list) [33m2790[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.6 Customers API (HTTP)[2m > [22mGET /customers/:id dengan id tidak ada -> 404 [33m2256[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.6 Customers API (HTTP)[2m > [22mPOST /customers/:id/status -> update status [33m2172[2mms[22m[39m
+ [32m✓[39m test/billing-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 49878[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.3 BillingService (Generator Tagihan)[2m > [22mGenerator menerbitkan invoice untuk pelanggan aktif [33m1545[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.3 BillingService (Generator Tagihan)[2m > [22mGenerator idempoten: run dua kali tidak duplikat [33m1612[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.3 BillingService (Generator Tagihan)[2m > [22mGenerator prorata: aktivasi tengah bulan [33m907[2mms[22m[39m
+ [32m✓[39m test/ledger-implementation.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 51638[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mS8: Refund deposit [33m1944[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT15: Impor saldo awal (tunggakan & deposit) [33m1123[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT21: Void payment setelah refund ditolak [33m1629[2mms[22m[39m
+   [33m[2m✓[22m[39m C3.7 Final: S8, T15, T21, T22[2m > [22mT22: Void invoice lunas, dana jadi deposit [33m840[2mms[22m[39m
+ [32m✓[39m test/ledger-property.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 77678[2mms[22m[39m
+   [33m[2m✓[22m[39m C4 Property Testing[2m > [22mUrutan operasi acak tidak boleh melanggar Invarian [33m32422[2mms[22m[39m
+ [32m✓[39m test/ledger-negative.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 34067[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-7: Duplicate active monthly invoice harus ditolak (P2002) [33m1377[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-4 Group A: Database Invariants (N-7, N-9)[2m > [22mN-9: Append-only protection (UPDATE & DELETE ditolak di kedua tabel) [33m914[2mms[22m[39m
+ [32m✓[39m test/packages-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 40803[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.7 Packages API (HTTP)[2m > [22mPOST /packages -> 201 [33m2417[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.7 Packages API (HTTP)[2m > [22mGET /packages -> list [33m1855[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.7 Packages API (HTTP)[2m > [22mPOST /packages/:id/archive -> ARSIP [33m1311[2mms[22m[39m
+ [32m✓[39m test/fixtures.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 63243[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-2-2 Fixtures[2m > [22mT-01: createCustomer menghasilkan customer valid dengan default [33m2938[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-2-2 Fixtures[2m > [22mT-02: createInvoice valid + FK menolak customer tidak ada [33m3630[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-2-2 Fixtures[2m > [22mT-03: truncateAll membersihkan tabel dan mereset identity [33m4931[2mms[22m[39m
+   [33m[2m✓[22m[39m C2-2-2 Fixtures[2m > [22mT-04: append-only tetap aktif sebelum dan sesudah truncateAll [33m4710[2mms[22m[39m
+[90mstdout[2m | test/auth-api.test.ts[2m > [22m[2mC5.5 Auth API (HTTP)[2m > [22m[2mPOST /auth/login dengan kredensial benar -> 200/201
+[22m[39m[SEED] hash: $argon2id$v=19$m=65536,t=3,p=4...
+
+[90mstdout[2m | test/auth-api.test.ts[2m > [22m[2mC5.5 Auth API (HTTP)[2m > [22m[2mPOST /auth/login dengan kredensial benar -> 200/201
+[22m[39m[SEED] user created: 5a9acb29-9342-4686-9532-8a3298539467 admin@test.local [33mtrue[39m
+
+[90mstdout[2m | test/auth-api.test.ts[2m > [22m[2mC5.5 Auth API (HTTP)[2m > [22m[2mPOST /auth/login dengan password salah -> 401
+[22m[39m[SEED] hash: $argon2id$v=19$m=65536,t=3,p=4...
+
+[90mstdout[2m | test/auth-api.test.ts[2m > [22m[2mC5.5 Auth API (HTTP)[2m > [22m[2mPOST /auth/login dengan password salah -> 401
+[22m[39m[SEED] user created: 70395e56-e05e-4e58-a72b-cef442543c0e admin@test.local [33mtrue[39m
+
+ [32m✓[39m test/auth-api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 64507[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.5 Auth API (HTTP)[2m > [22mPOST /auth/login dengan kredensial benar -> 200/201 [33m2791[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.5 Auth API (HTTP)[2m > [22mPOST /auth/login dengan password salah -> 401 [33m2295[2mms[22m[39m
+   [33m[2m✓[22m[39m C5.5 Auth API (HTTP)[2m > [22mPOST /payments tanpa token -> 401 [33m1941[2mms[22m[39m
+ [32m✓[39m test/ledger-actor.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 62154[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-3: Actor propagation[2m > [22missueInvoice with actor -> createdBy = actor.userId [33m1917[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-3: Actor propagation[2m > [22missueInvoice without actor -> createdBy = null [33m1442[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-3: Actor propagation[2m > [22mpostPayment with actor -> entry createdBy = actor.userId [33m837[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-3: Actor propagation[2m > [22mpostPayment without actor -> entry createdBy = input.recordedBy [33m599[2mms[22m[39m
+ [32m✓[39m test/ledger-items.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 41338[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-2: InvoiceItem support[2m > [22mno items -> 0 InvoiceItem rows (backward compat) [33m1856[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-2: InvoiceItem support[2m > [22m3 items -> 3 InvoiceItem rows with correct fields [33m1200[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-2: InvoiceItem support[2m > [22msingle item -> 1 InvoiceItem row [33m891[2mms[22m[39m
+ [32m✓[39m test/setup-containers.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 37433[2mms[22m[39m
+ [32m✓[39m src/health/health.controller.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 342[2mms[22m[39m
+ [32m✓[39m test/ledger-duplicate.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 37510[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-5: Duplicate detection (BR-P3)[2m > [22msame customer+amount+method within 60s, different key -> reject [33m1070[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-5: Duplicate detection (BR-P3)[2m > [22msame customer+method but different amount -> pass [33m987[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-5: Duplicate detection (BR-P3)[2m > [22mno idempotencyKey -> skip detection (backward compat) [33m784[2mms[22m[39m
+ [32m✓[39m test/ledger-void-audit.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 23973[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-4: Void audit fields[2m > [22mvoidInvoice sets voidedAt + voidReason [33m385[2mms[22m[39m
+   [33m[2m✓[22m[39m B1-4: Void audit fields[2m > [22mvoidPayment sets voidedAt (existing behavior) [33m319[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m      Tests [22m [1m[32m55 passed[39m[22m[90m (55)[39m
+[2m   Start at [22m 15:40:22
+[2m   Duration [22m 326.66s[2m (transform 1.99s, setup 0ms, collect 111.94s, tests 818.80s, environment 13ms, prepare 9.34s)[22m
+

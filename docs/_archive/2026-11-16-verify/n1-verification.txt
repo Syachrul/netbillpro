@@ -1,0 +1,23 @@
+--- timestamp: 2026-11-16T08:45:53Z ---
+--- HEAD: f7f2733 ---
+--- full suite exit: 0 ---
+--- V-1 verdict: UNKNOWN ---
+
+--- test file list ---
+apps/api/test/auth-api.test.ts
+apps/api/test/billing-api.test.ts
+apps/api/test/customers-api.test.ts
+apps/api/test/fixtures.test.ts
+apps/api/test/ledger-actor.test.ts
+apps/api/test/ledger-duplicate.test.ts
+apps/api/test/ledger-implementation.test.ts
+apps/api/test/ledger-items.test.ts
+apps/api/test/ledger-negative.test.ts
+apps/api/test/ledger-property.test.ts
+apps/api/test/ledger-read-api.test.ts
+apps/api/test/ledger-void-audit.test.ts
+apps/api/test/packages-api.test.ts
+apps/api/test/payments-api.test.ts
+
+--- summary ---
+
