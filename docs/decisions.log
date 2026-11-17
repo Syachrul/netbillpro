@@ -378,3 +378,72 @@ B1-1a..B1-5 commits.
 
 Status: RATIFIED (QUALIFIED). Implementation authorized within scope
 above. Deferred items tracked. No schema change authorized by this block.
+
+[2026-11-17] OWNER DECISION - RATIFY-001 COUNT CORRECTION [DEC-2026-11-17-RATIFY-001-ADDENDUM]
+
+Purpose: Historical correction to DEC-2026-11-16-C3-RATIFY-001.
+Does NOT change ratification substance or deferred finding status.
+
+Prior statement (DEC-2026-11-16-C3-RATIFY-001, in-force):
+  "pnpm typecheck baseline: 19 pre-existing errors (F-B1-1a-1 deferred
+   to separate tsconfig work unit; not introduced by B1 series)"
+
+Actual (Phase F-1 evidence capture, 2026-11-17, HEAD f7f2733, clean
+tracked tree, decisions.log unmodified):
+  Evidence: docs/_archive/2026-11-17-typecheck-evidence/
+    - typecheck-full.log (56 lines, 7445 bytes)
+    - errors-only.txt (22 error lines)
+    - errors-tuples.txt (22 tuples, dedup analysis)
+    - summary.txt (structured counts)
+
+  Raw counts:
+    - pnpm typecheck exit code: 1
+    - 22 output lines matching "error TS"
+    - 8 distinct TypeScript error codes
+    - 22 unique diagnostics (by file+line+col+code+msg tuple)
+    - 0 duplicate diagnostic lines (NO duplicates found)
+
+  Error code distribution (8 distinct codes, 22 total lines):
+    - TS6307 (not in file list):           5 lines
+    - TS6059 (not under rootDir):          5 lines
+    - TS18048 (possibly undefined):        4 lines
+    - TS2769 (no overload match):          3 lines
+    - TS2322 (not assignable):             2 lines
+    - TS2532 (object possibly undefined):  1 line
+    - TS2365 (operator mismatch):          1 line
+    - TS2347 (untyped call):               1 line
+
+  Files affected (3):
+    - src/modules/billing/billing.service.ts:       4 lines
+    - src/modules/ledger/ledger.service.ts:        10 lines
+    - ../../packages/shared/src/index.ts:           8 lines
+
+  Root-cause analysis (project-reference errors, TS6059/TS6307):
+    - 10 lines = 5 paired diagnostics (each pair = 1 underlying import issue)
+    - Underlying issues if pairs consolidated: 17
+      (5 paired + 4 TS18048 + 3 TS2769 + 2 TS2322 + 1 TS2532 + 1 TS2365 + 1 TS2347)
+
+Reconciliation:
+  - "19 errors" = NOT SUPPORTED by evidence.
+    - Not 22 lines (literal tsc output)
+    - Not 22 unique (full tuple dedup)
+    - Not 8 distinct codes
+    - Not 17 underlying (if pairs consolidated)
+    - Origin of "19" unverified. Likely drafting miscount during
+      ratification preparation. No supporting log preserved.
+  - Corrected phrasing (definitive):
+    "22 output lines / 8 distinct TS codes / 0 duplicate lines /
+     17 underlying issues if TS6059+TS6307 pairs consolidated"
+
+Status changes: NONE. Ratification remains RATIFIED (QUALIFIED).
+Deferred findings remain unchanged (F-Z-6, F-Z-7, F-B1-4-1, F-B1-1a-2).
+
+Preserved authorizations: unchanged. F-1 remediation still HOLD.
+Scope A vs Scope B evaluation pending Owner decision.
+
+Supersedes: none (ratification block preserved intact; this is addendum)
+Related: DEC-2026-11-16-C3-RATIFY-001, Phase F-1 evidence 2026-11-17,
+  F-9 (ACCEPTED — CORRECTED with evidence)
+
+Status: RECORDED — correction noted. No governance effect change.
+Evidence trail: docs/_archive/2026-11-17-typecheck-evidence/

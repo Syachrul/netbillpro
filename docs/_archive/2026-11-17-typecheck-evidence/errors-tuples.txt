@@ -1,0 +1,22 @@
+1	src/modules/billing/billing.service.ts	L91C43	TS2769	No overload matches this call.
+2	src/modules/billing/billing.service.ts	L91C49	TS18048	'month' is possibly 'undefined'.
+3	src/modules/billing/billing.service.ts	L92C41	TS2769	No overload matches this call.
+4	src/modules/billing/billing.service.ts	L107C41	TS2769	No overload matches this call.
+5	src/modules/ledger/ledger.service.ts	L3C32	TS6059	File 'F:/Project/NEW RTRWNET/packages/shared/src/index.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+6	src/modules/ledger/ledger.service.ts	L3C32	TS6307	File 'F:/Project/NEW RTRWNET/packages/shared/src/index.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+7	src/modules/ledger/ledger.service.ts	L139C11	TS2322	Type 'Record<string, unknown>' is not assignable to type 'JsonNull | InputJsonValue'.
+8	src/modules/ledger/ledger.service.ts	L335C5	TS2322	Type 'number' is not assignable to type 'bigint'.
+9	src/modules/ledger/ledger.service.ts	L339C12	TS2347	Untyped function calls may not accept type arguments.
+10	src/modules/ledger/ledger.service.ts	L387C27	TS18048	'available' is possibly 'undefined'.
+11	src/modules/ledger/ledger.service.ts	L388C11	TS18048	'allocAmount' is possibly 'undefined'.
+12	src/modules/ledger/ledger.service.ts	L398C9	TS2532	Object is possibly 'undefined'.
+13	src/modules/ledger/ledger.service.ts	L398C9	TS2365	Operator '-=' cannot be applied to types 'bigint' and 'number | bigint'.
+14	src/modules/ledger/ledger.service.ts	L398C26	TS18048	'allocAmount' is possibly 'undefined'.
+15	../../packages/shared/src/index.ts	L1C15	TS6059	File 'F:/Project/NEW RTRWNET/packages/shared/src/money.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+16	../../packages/shared/src/index.ts	L1C15	TS6307	File 'F:/Project/NEW RTRWNET/packages/shared/src/money.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+17	../../packages/shared/src/index.ts	L2C15	TS6059	File 'F:/Project/NEW RTRWNET/packages/shared/src/clock.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+18	../../packages/shared/src/index.ts	L2C15	TS6307	File 'F:/Project/NEW RTRWNET/packages/shared/src/clock.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+19	../../packages/shared/src/index.ts	L3C15	TS6059	File 'F:/Project/NEW RTRWNET/packages/shared/src/result.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+20	../../packages/shared/src/index.ts	L3C15	TS6307	File 'F:/Project/NEW RTRWNET/packages/shared/src/result.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+21	../../packages/shared/src/index.ts	L4C15	TS6059	File 'F:/Project/NEW RTRWNET/packages/shared/src/errors.ts' is not under 'rootDir' 'F:/Project/NEW RTRWNET/apps/api/src'. 'rootDir' is expected to contain all source files.
+22	../../packages/shared/src/index.ts	L4C15	TS6307	File 'F:/Project/NEW RTRWNET/packages/shared/src/errors.ts' is not listed within the file list of project 'F:/Project/NEW RTRWNET/apps/api/tsconfig.json'. Projects must list all files or use an 'include' pattern.
